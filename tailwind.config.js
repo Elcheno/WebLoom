@@ -7,13 +7,36 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        background: "hsl(var(--background))",
+        background: "#f1f5f9",
         foreground: "hsl(var(--foreground))",
         btn: {
           background: "hsl(var(--btn-background))",
           "background-hover": "hsl(var(--btn-background-hover))",
         },
+        'black-primary': "#000000",
+        'white-primary': "#ffffff",
       },
+      rounded: {
+        card: "2rem"
+      },
+      screens: {
+        '3xl': '1921px'
+      },
+      animation: {
+        "zoom-in-fast": "zoom-in 0.1s ease-out"
+      },
+      keyframes: {
+        "zoom-in": {
+          "0%": {
+            "opacity": "0",
+            "transform": "scale(.5)"
+          },
+          "100%": {
+            "opacity": "1",
+            "transform": "scale(1)"
+          }
+        }
+      }
     },
   },
   plugins: [],

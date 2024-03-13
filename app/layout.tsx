@@ -1,5 +1,6 @@
-import { GeistSans } from "geist/font/sans";
+import { urbanist } from "./ui/fonts";
 import "./globals.css";
+import NavBar from "./ui/nav-bar";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -17,10 +18,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={GeistSans.className}>
+    <html lang="en" className={urbanist.className}>
       <body className="bg-background text-foreground">
         <main className="min-h-screen flex flex-col items-center">
-          {children}
+          <NavBar />
+          { children }
         </main>
       </body>
     </html>
