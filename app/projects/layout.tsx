@@ -15,7 +15,7 @@ export default function ProjectLayout({
         <AddProjectsButton />
       </section>
 
-      <section className="w-full h-[40rem] 3xl:h-[58rem] grid grid-cols-12 grid-rows-1">
+      <section className="w-full grid grid-cols-12 grid-rows-1">
 
         <nav className="col-start-1 col-end-2 h-full pt-10 pl-10">
           <ProjectsNavBar />

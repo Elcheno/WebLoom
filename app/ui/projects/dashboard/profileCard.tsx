@@ -1,5 +1,5 @@
 import { fetchUser } from "@/app/lib/data";
-import Card from "../card";
+import Card from "../../card";
 
 export default async function ProfileCard() {
   const userList = await fetchUser();

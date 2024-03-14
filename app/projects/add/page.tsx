@@ -3,62 +3,127 @@
 import { addProject } from "@/app/lib/actions";
 import { PlusCircle, Undo2 } from "lucide-react";
 import { create } from 'zustand'
+import { toast } from 'sonner'
+import { redirect } from "next/navigation";
 
-type project = {
-  name: string,
-  description: string,
-  state: 'live' | 'pending',
-  url: string,
+type state = {
+  name: {
+    value: string,
+    valid: boolean,
+    pristine: boolean
+  },
+  description: {
+    value: string,
+    valid: boolean,
+    pristine: boolean
+  },
+  state: {
+    value: 'live' | 'pending',
+    valid: boolean,
+    pristine: boolean
+  },
+  url: {
+    value: string,
+    valid: boolean,
+    pristine: boolean
+  },
 }
 
 type actions = {
+  pristine: boolean,
+  valid: boolean,
   setName: (value: string) => void,
   setDescription: (value: string) => void,
   setState: (value: 'live' | 'pending') => void,
   setUrl: (value: string) => void,
   reset: () => void,
-  validate: () => boolean
+  validate: () => void,
 }
 
-const initialState: project = {
-  name: '',
-  description: '',
-  state: 'live',
-  url: '',
+const initialState: state = {
+  name: { value: '', valid: false, pristine: true },
+  description: { value: '', valid: false, pristine: true },
+  state: { value: 'live', valid: true, pristine: true },
+  url: { value: '', valid: false, pristine: true },
 }
 
-const useStore = create<project & actions>((set, get) => ({
+const useStore = create<state & actions>((set, get) => ({
   ...initialState,
-  setName: (value: string) => set(() => ({ name: value })),
-  setDescription: (value: string) => set({ description: value }),
-  setState: (value: 'live' | 'pending') => set({ state: value }),
-  setUrl: (value: string) => set({ url: value }),
-  reset: () => set({ name: '', description: '', state: 'live', url: '' }),
+  setName: (value: string) => {
+    set(() => ({ name: { value, valid: value.trim() !== '', pristine: false } })),
+    get().validate()
+  },
+  setDescription: (value: string) => {
+    set({ description: { value, valid: value.trim() !== '', pristine: false }}),
+    get().validate()
+  },
+  setState: (value: 'live' | 'pending') => {
+    set({ state: { value, valid: true, pristine: false } })
+    if (value === 'pending') set({ url: { ...get().url, valid: true }});
+    get().validate()
+  },
+  setUrl: (value: string) => {
+    const valid = () => {
+      if (get().state.value === 'live') return value.trim() !== '';
+      return true;
+    }
+    set({ url: { value, valid: valid(), pristine: false } }),
+    get().validate()
+  },
+  pristine: true,
+  valid: false,
+  reset: () => {
+    set(initialState)
+  },
   validate: () => {
-    if (get().name === '') return false;
-    if (get().description === '') return false;
-    if (get().state === 'live' && get().url === '') return false;
+    set({ pristine: false });
+    if (!get().name.valid) {
+      set({ valid: false})
+      return;
+    };
+    if (!get().description.valid) {
+      set({ valid: false})
+      return;
+    };
+    if (!get().url.valid) {
+      set({ valid: false})
+      return;
+    };
 
-    return true
-  }
+    set({ valid: true})
+  },
 }))
 
 export default function Page() {
-  const formState = useStore();
+  const formState = useStore();  
   
-  const handlerSubmit = async () => {
-    if (!formState.validate()) return;
+  const handlerSubmit = async () => {   
+    if (!formState.valid) {
+      toast.warning('Invalid project, check fields');
+      return;
+    };
     
-    await addProject({ 
-      formName: formState.name, 
-      formDescription: formState.description, 
-      formUrl: formState.url, 
-      formState: formState.state 
+    const [data, error] = await addProject({ 
+      formName: formState.name.value, 
+      formDescription: formState.description.value, 
+      formUrl: formState.url.value, 
+      formState: formState.state.value
     });
+
+    if (error) {
+      toast('Error adding project');
+      console.log(error);
+
+    } else {
+      toast.success(`Project ${formState.name.value} added successfully`);
+      formState.reset();
+      redirect('/projects/list');
+
+    }
   }
 
   return (
-    <main className="col-start-2 col-end-12 flex flex-col">
+    <main className="col-start-3 col-end-11 flex flex-col">
        
       <form action={ handlerSubmit } className="px-10 pt-10 w-full flex flex-col gap-10 pb-10">
 
@@ -67,7 +132,7 @@ export default function Page() {
           <input 
             type="text" 
             placeholder="'WebLoom' for example" 
-            className="w-full py-2 px-4 border border-gray-200 focus:border-gray-400 rounded-xl outline-none transition-colors"
+            className={`w-full py-2 px-4 border-2 rounded-xl outline-none transition-colors ${ !formState.name.pristine && !formState.name.valid ? "border-red-500" : "border-gray-200 focus:border-gray-400"}`}
             onChange={ (e) => formState.setName(e.target.value) }
           />
         </section>
@@ -76,20 +141,20 @@ export default function Page() {
           <label className="text-lg pl-1">Description</label>
           <textarea 
             placeholder="Description of the project" 
-            className="w-full h-fit overflow-auto py-2 px-4 border border-gray-200 focus:border-gray-400 rounded-xl outline-none max-h-[300px] min-h-[100px] transition-colors"
+            className={`w-full h-fit border-2 overflow-auto py-2 px-4 rounded-xl outline-none max-h-[300px] min-h-[100px] transition-colors ${ !formState.description.pristine && !formState.description.valid ? "border-red-500" : "border-gray-200 focus:border-gray-400"}`}
             onChange={ (e) => formState.setDescription(e.target.value) }
           />
         </section>
 
         <section className="flex flex-col">
-          <label className="text-lg pl-1">Visibility<span> - { formState.state === 'live' ? 'Public' : 'Private' }</span></label>
+          <label className="text-lg pl-1">Visibility<span> - { formState.state.value === 'live' ? 'Public' : 'Private' }</span></label>
           <div className="flex flex-col gap-5">
 
             <div 
               className={`p-1 bg-white-primary rounded-xl border border-gray-200 cursor-pointer`} 
               onClick={ () => formState.setState('live') }
               >
-              <div className={`p-4 flex flex-col transition-colors rounded-xl border-2 ${ formState.state === 'live' ? 'border-black-primary' : 'border-gray-200' }`}>
+              <div className={`p-4 flex flex-col transition-colors rounded-xl border-2 ${ formState.state.value === 'live' ? 'border-black-primary' : 'border-gray-200' }`}>
                 <h3>Public</h3>
                 <p className="px-5 py-2 text-gray-600">
                   Make your project visible to everyone. Get feedback and collaboration from other users. This option is ideal if you are looking to share your work with the world 
@@ -102,7 +167,7 @@ export default function Page() {
               className={`p-1 bg-white-primary rounded-xl border border-gray-200 cursor-pointer`} 
               onClick={ () => formState.setState('pending') }
               >
-              <div className={`p-4 flex flex-col transition-colors rounded-xl border-2 ${ formState.state === 'pending' ? 'border-black-primary' : 'border-gray-200' }`}>
+              <div className={`p-4 flex flex-col transition-colors rounded-xl border-2 ${ formState.state.value === 'pending' ? 'border-black-primary' : 'border-gray-200' }`}>
                 <h3>Private</h3>
                 <p className="px-5 py-2 text-gray-600">
                   Control who accesses your project. Ideal for confidential or private work. This option gives you control over the privacy of your work, ensuring that only you can access it. 
@@ -119,7 +184,7 @@ export default function Page() {
           <input 
             type="text" 
             placeholder="'https://webloom.com' for example" 
-            className="w-full py-2 px-4 border border-gray-200 focus:border-gray-400 rounded-xl outline-none transition-colors"
+            className={`w-full py-2 px-4 border-2 rounded-xl outline-none transition-colors ${ !formState.url.pristine && !formState.url.valid ? "border-red-500" : "border-gray-200 focus:border-gray-400"}`}
             onChange={ (e) => formState.setUrl(e.target.value) }
           />
         </section>

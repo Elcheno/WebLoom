@@ -1,6 +1,7 @@
 import { urbanist } from "./ui/fonts";
 import "./globals.css";
 import NavBar from "./ui/nav-bar";
+import { Toaster } from 'sonner'
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -23,6 +24,7 @@ export default function RootLayout({
         <main className="min-h-screen flex flex-col items-center">
           <NavBar />
           { children }
+          <Toaster position="bottom-center" />
         </main>
       </body>
     </html>

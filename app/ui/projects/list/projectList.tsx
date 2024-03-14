@@ -2,17 +2,12 @@ import { fetchProjectsFilteredPage } from "@/app/lib/data"
 import { ArrowUpRightFromSquare } from "lucide-react";
 import Card from "../../card";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
-import { Lock, Trash2 } from "lucide-react";
+import ProjectListDropdown from "./project-list-dropdown";
+import Link from "next/link";
 
 export default async function ProjectList({
   query,
@@ -30,29 +25,12 @@ export default async function ProjectList({
       {
         projects?.map((project: any) => {
           return (
-            <Card key={ project.id } classList={`p-5 flex flex-col hover:bg-white border border-gray-50 hover:shadow-sm transition-all duration-100`}>
+            <Card key={ project.id } classList={`p-5 flex flex-col hover:bg-white border border-gray-50 hover:shadow-sm transition-all duration-100 min-h-[225px] max-h-[500px]`}>
               <div className="flex justify-between">
-                <span className="text-xl">{ project.name }</span>
+                <Link href={ `/projects/${ project.id }` } className="text-xl hover:underline">{ project.name }</Link>
                 <div className="flex gap-4">
 
-                  <DropdownMenu>
-                    <DropdownMenuTrigger className="cursor-pointer hover:text-[#b8d900] transition-colors hover:bg-gray-50 rounded-lg p-1 outline-none">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-ellipsis">
-                        <circle cx="12" cy="12" r="1"/>
-                        <circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>
-                      </svg>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      <DropdownMenuItem className="cursor-pointer p-2 text-base">
-                        <Lock className="w-4 h-4 mr-2" />
-                        Change Visibility
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="cursor-pointer p-2 text-base">
-                        <Trash2 className="w-4 h-4 mr-2" />
-                        Delete Project
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <ProjectListDropdown project={ project }/>
 
                   <span className="cursor-pointer hover:text-[#b8d900] transition-colors hover:bg-gray-50 rounded-lg p-1">
                     <a 

@@ -1,5 +1,5 @@
 import { fetchProjectsPending } from "@/app/lib/data";
-import Card from "../card";
+import Card from "../../card";
 
 export default async function CountPendingProjectsCars() {
   const projectsPending = await fetchProjectsPending();

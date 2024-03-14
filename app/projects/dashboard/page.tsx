@@ -6,12 +6,12 @@ import {
   SkeletonGradiantChartCard
 } from "../../ui/projects/skeletons";
 import { Suspense } from "react";
-import LastProyectCard from "../../ui/projects/lastProjectCard";
-import CountLiveProjectsCard from "../../ui/projects/countLiveProjectsCard";
-import CountPendingProjectsCars from "../../ui/projects/countPendingProjectsCard";
-import ProfileCard from "../../ui/projects/profileCard";
-import ProjectsCircleCard from "../../ui/projects/projectsCircleCard";
-import ProjectsGradiantCard from "../../ui/projects/projectsGradiantCard";
+import LastProyectCard from "../../ui/projects/dashboard/lastProjectCard";
+import CountLiveProjectsCard from "../../ui/projects/dashboard/countLiveProjectsCard";
+import CountPendingProjectsCars from "../../ui/projects/dashboard/countPendingProjectsCard";
+import ProfileCard from "../../ui/projects/dashboard/profileCard";
+import ProjectsCircleCard from "../../ui/projects/dashboard/projectsCircleCard";
+import ProjectsGradiantCard from "../../ui/projects/dashboard/projectsGradiantCard";
 
 export default function Dashboard() {
   return (

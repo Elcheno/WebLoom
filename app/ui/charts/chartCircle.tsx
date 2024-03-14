@@ -48,9 +48,13 @@ export default function ChartCircle({ values }: any) {
         }
       ]       
     });
+
+    return () => {
+      myChart.dispose();
+    }
   });
 
   return (
-    <div ref={chartDom} className="flex justify-center items-center h-[325px] w-[325px] 3xl:h-[450px] 3xl:w-[450px] m-auto"></div>
+    <div ref={chartDom} className="flex justify-center items-center h-[300px] w-[300px] 3xl:h-[450px] 3xl:w-[450px] m-auto"></div>
   )
 }

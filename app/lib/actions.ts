@@ -3,7 +3,6 @@
 import { createClient } from '@/utils/supabase/server';
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
 const CreateProjectSchema = z.object({
   id: z.number(),
@@ -28,9 +27,7 @@ export async function addProject(
       formDescription: string, 
       formUrl: string, 
       formState: string 
-  }) {
-    console.log(formName, formDescription, formUrl, formState);
-    
+  }) {  
     const { name, description, url, state } = CreateProjectFormSchema.parse({ 
       name: formName, 
       description: formDescription, 
@@ -42,14 +39,77 @@ export async function addProject(
 
     const date = new Date().toJSON().slice(0, 10);
 
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    // await new Promise((resolve) => setTimeout(resolve, 500));
 
     const { data, error } = await supabase
       .from("projects")
       .insert([
         { name, description, url, state, users_id: 1, date }
       ]);
-    
+
+    if (!error) {
+      revalidatePath("/projects/**");
+    }
+
+    return [data, error];
+}
+
+export async function removeProject(
+  { id }
+  : {
+    id: number
+  }
+) {
+  const supabase = createClient();
+
+  const { data, error } = await supabase
+    .from("projects")
+    .delete()
+    .eq("id", id);
+
+  if (!error) {
     revalidatePath("/projects/**");
-    redirect("/projects/list");
+  }
+
+  return [data, error];
+}
+
+export async function changeVisibilityLive(
+  { id }
+  : {
+    id: number
+  }
+) {
+  const supabase = createClient();
+
+  const { data, error } = await supabase
+    .from("projects")
+    .update({ state: "live" })
+    .eq("id", id);
+
+  if (!error) {
+    revalidatePath("/projects/**");
+  }
+
+  return [data, error];
+}
+
+export async function changeVisibilityPending(
+  { id }
+  : {
+    id: number
+  }
+) {
+  const supabase = createClient();
+
+  const { data, error } = await supabase
+    .from("projects")
+    .update({ state: "pending" })
+    .eq("id", id);
+
+  if (!error) {
+    revalidatePath("/projects/**");
+  }
+
+  return [data, error];
 }

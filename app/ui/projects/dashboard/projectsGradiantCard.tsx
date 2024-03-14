@@ -1,6 +1,6 @@
 import { fetchProjects, fetchProjectsLive, fetchProjectsPending } from "@/app/lib/data";
-import Card from "../card";
-import ChartGradient from "../charts/chartGradient";
+import Card from "../../card";
+import ChartGradient from "../../charts/chartGradient";
 import * as echarts from 'echarts';
 import { countCoincidences } from "@/app/lib/utils";
 

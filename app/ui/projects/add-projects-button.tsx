@@ -14,18 +14,20 @@ export default function AddProjectsButton() {
   }, [usePathname()]);
 
   return (
-    <div className="">
+    <>
       {
         route !== 'add' && (
           <Link
             href="/projects/add"
-            className="flex flex-nowrap gap-2 rounded-full bg-white-primary border border-gray-50 p-3 m-auto h-fit"
+            className="rounded-full bg-white-primary border-gray-50 p-1"
             >
-            <PlusCircle className="w-6"/>
-            <span>Add Project</span>
+              <div className="flex flex-nowrap items-center gap-2 h-full p-2 border-2 border-white hover:border-black-primary rounded-full transition-colors">
+                <PlusCircle className="w-6"/>
+                <span>Add Project</span>
+              </div>
           </Link>
         )
       }
-    </div>
+    </>
   )
 }

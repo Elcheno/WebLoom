@@ -23,7 +23,8 @@ module.exports = {
         '3xl': '1921px'
       },
       animation: {
-        "zoom-in-fast": "zoom-in 0.1s ease-out"
+        "zoom-in-fast": "zoom-in 0.1s ease-out",
+        "scale-pulse": "pulse-bounce 0.25s ease-in-out"
       },
       keyframes: {
         "zoom-in": {
@@ -33,6 +34,17 @@ module.exports = {
           },
           "100%": {
             "opacity": "1",
+            "transform": "scale(1)"
+          }
+        },
+        "pulse-bounce": {
+          "0%": {
+            "transform": "scale(1)"
+          },
+          "50%": {
+            "transform": "scale(1.3)"
+          },
+          "100%": {
             "transform": "scale(1)"
           }
         }

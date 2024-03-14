@@ -26,7 +26,7 @@ export default function ProjectsList({
         <FilterProjectList />
       </section>
 
-      <section className="w-full h-full px-10 grid grid-cols-12 grid-rows-12 gap-3">
+      <section className="w-full h-full px-10 grid grid-cols-12 grid-rows-1 gap-3">
         <div className="col-start-1 col-end-13">
           <Suspense fallback={<SkeletonProjectList />}>
             <ProjectList query={query} currentPage={currentPage} state={state}/>

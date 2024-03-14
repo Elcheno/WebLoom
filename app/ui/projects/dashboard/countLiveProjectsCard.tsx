@@ -1,5 +1,5 @@
 import { fetchProjectsLive } from "@/app/lib/data";
-import Card from "../card";
+import Card from "../../card";
 
 export default async function CountLiveProjectsCars() {
   const projectsLive = await fetchProjectsLive();

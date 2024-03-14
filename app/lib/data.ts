@@ -36,6 +36,23 @@ export async function fetchProjects() {
   return projects;
 }
 
+export async function fetchProjectById(
+  { id }
+  : { 
+    id: number 
+  }
+) {
+  const supabase = createClient();
+
+  const { data: project } = await supabase
+    .from("projects")
+    .select()
+    .eq("users_id", 1)
+    .eq("id", id);
+
+  return project;
+}
+
 export async function fetchLastProject() {
   const supabase = createClient();
   await new Promise((resolve) => setTimeout(resolve, 500));
@@ -128,4 +145,4 @@ export async function fetchProjectsFilteredPage({ query, currentPage, state }: {
 
     return projects;
   }
-}
+} 

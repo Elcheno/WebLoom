@@ -1,6 +1,6 @@
 import { fetchProjectsLive, fetchProjectsPending } from "@/app/lib/data";
-import ChartCircle from "../charts/chartCircle";
-import Card from "../card"
+import ChartCircle from "../../charts/chartCircle";
+import Card from "../../card"
 
 export default async function ProjectsCircleCard() {
   const projectsLive = await fetchProjectsLive();

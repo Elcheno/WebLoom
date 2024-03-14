@@ -1,7 +1,7 @@
 import { fetchLastProject } from "@/app/lib/data";
-import Card from "../card";
+import Card from "../../card";
 import { ArrowUpRightFromSquare } from "lucide-react";
-import "./projectsStyles.css";
+import "./../projectsStyles.css";
 import LastProjectClientCard from "./lastProjectClientCard";
 
 export default async function LastProyectCard() {

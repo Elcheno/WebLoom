@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Card from "../card";
+import Card from "../../card";
 import { ArrowUpRightFromSquare } from "lucide-react";
 
 export default function LastProjectClientCard({ lastProject }: { 
@@ -18,7 +18,9 @@ export default function LastProjectClientCard({ lastProject }: {
 
   return (
     <Card>
-      <div className="flex flex-col gap-2 justify-between img-card-backdrop rounded-[2rem] h-full w-full" onPointerEnter={ () => setState(true) } onPointerLeave={ () => setState(false) }>
+      <div className="flex flex-col gap-2 justify-between img-card-backdrop rounded-[2rem] h-full w-full"
+        onPointerEnter={ () => setState(true) } onPointerLeave={ () => setState(false) }
+        >
         <section className="row-start-1 row-end-6 flex justify-between p-5 items-start">
           <div className="flex flex-col gap-2">
             <h3 className="text-xl">Last Project</h3>
