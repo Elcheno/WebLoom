@@ -2,7 +2,7 @@ import { fetchLastProject } from "@/app/lib/data";
 import Card from "../../card";
 import { ArrowUpRightFromSquare } from "lucide-react";
 import "./../projectsStyles.css";
-import LastProjectClientCard from "./lastProjectClientCard";
+import LastProjectClientCard from "./last-project-client-card";
 
 export default async function LastProyectCard() {
   const lastProjectList = await fetchLastProject();

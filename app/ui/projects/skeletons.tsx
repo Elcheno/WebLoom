@@ -81,3 +81,17 @@ export function SkeletonProjectList() {
     </div>
   )
 }
+
+export function SkeletonProjectView () {
+  return(
+    <>
+      <Card classList={`bg-slate-200 animate-pulse`}>
+        <div className="w-full h-[264px]"></div>
+      </Card>
+
+      <Card classList={`bg-slate-200 animate-pulse`}>
+        <div className="w-full h-[264px]"></div>
+      </Card> 
+    </>
+  )
+}

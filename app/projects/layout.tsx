@@ -1,11 +1,20 @@
 import AddProjectsButton from "../ui/projects/add-projects-button";
 import ProjectsNavBar from "../ui/projects/projects-nav-bar";
+import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
 
-export default function ProjectLayout({
+export default async function ProjectLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+
+  const supabase = createClient();
+  const { data: { session }} = await supabase.auth.getSession();
+
+  if (session === null) {
+    redirect("/sign-in");
+  }
 
   return (
     <main className="w-full h-full flex flex-col items-center">

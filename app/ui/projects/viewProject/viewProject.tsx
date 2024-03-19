@@ -1,11 +1,16 @@
-"use client";
-
+import { formatVisibility, unFormatName } from "@/utils/utils";
 import Card from "../../card";
 import ChangeVisibility from "./ChangeVisibility";
 import CopyClipboard from "./CopyClipboard";
 import DeleteProject from "./DeleteProject";
+import { fetchProjectByName } from '@/app/lib/data';
+import UpdateName from "./UpdateName";
+import UpdateDescription from "./UpdateDescription";
+import UpdateUrl from "./UpdateUrl";
 
-export default function PageViewProject({ project }: { project: any}) {
+export default async function PageViewProject({ params }: { params: any}) {  
+  const project = (await fetchProjectByName({ name: unFormatName(params.name) }))?.[0];
+
   return (
     <>
       <Card>
@@ -21,13 +26,9 @@ export default function PageViewProject({ project }: { project: any}) {
               <CopyClipboard project={ project }/>
               
               <div className="flex flex-nowrap justify-end">
-                {
-                  project?.state === 'live' ? (
-                    <span className="text-lg bg-gray-200 py-1 px-3 rounded-full text-black-primary">Public</span>
-                  ) : (
-                    <span className="text-lg bg-gray-200 py-1 px-3 rounded-full text-black-primary">Private</span>
-                  )
-                }
+                <span className="text-lg bg-gray-200 py-1 px-3 rounded-full text-black-primary">
+                  { formatVisibility(project?.visibility) }
+                </span>
               </div>
             </div>
           </div>
@@ -36,7 +37,10 @@ export default function PageViewProject({ project }: { project: any}) {
 
       <Card>
         <div className="flex flex-col gap-4 p-4">
-
+          
+          <UpdateName project={ project }/>
+          <UpdateDescription project={ project }/>
+          <UpdateUrl project={ project }/>
           <ChangeVisibility project={ project }/>
           <DeleteProject project={ project }/>
 

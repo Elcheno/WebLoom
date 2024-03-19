@@ -1,3 +1,5 @@
+"use client";
+
 import { 
   AlertDialog,
   AlertDialogTrigger,
@@ -8,23 +10,33 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle, } from "@/components/ui/alert-dialog";
-import { changeVisibilityLive, changeVisibilityPending } from "@/app/lib/actions";
+import { changeVisibilityPublic, changeVisibilityPrivate } from "@/app/lib/actions";
 import { toast } from "sonner";
 import { Lock, Unlock } from "lucide-react";
+import { useState } from "react";
 
 export default function ChangeVisibility({ project }: { project: any}) {
+  const [urlProject, setUrlProject] = useState(false);
 
   const handlerChangeVisibility = async () => {
-    if (project?.state === "live") {
-      const [data, error] = await changeVisibilityPending({ id: project?.id });
+    if (project?.visibility === "public") {
+      const [data, error] = await changeVisibilityPrivate({ id: project?.id });
       
       if (!error) {
         toast.success(`Project ${project?.name} is now Private`);
+
       } else {
         toast.error(`Error change visibility`);
+
       }
     } else {
-      const [data, error] = await changeVisibilityLive({ id: project?.id });
+
+      if (!project.url) {
+        setUrlProject(true);
+        return;
+      }
+
+      const [data, error] = await changeVisibilityPublic({ id: project?.id });
       
       if (!error) {
         toast.success(`Project ${project?.name} is now Public`);
@@ -54,7 +66,7 @@ export default function ChangeVisibility({ project }: { project: any}) {
             <button className="bg-black-primary text-white-primary p-1 rounded-full border border-gray-50">
               <div className="flex gap-1 items-center justify-center px-2 py-1 border-2 border-black-primary hover:border-[#EDFD93] transition-colors rounded-full">
                 {
-                  project?.state === 'live' ? (
+                  project?.visibility === 'public' ? (
                     <>
                       <Lock className="w-4 h-4 mr-2" />
                       <span>Make to private</span>
@@ -71,10 +83,10 @@ export default function ChangeVisibility({ project }: { project: any}) {
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-                <AlertDialogTitle className="text-lg">Change Visibility to { project?.state === "live" ? "Private" : "Public" }</AlertDialogTitle>
+                <AlertDialogTitle className="text-lg">Change Visibility to { project?.visibility === "public" ? "Private" : "Public" }</AlertDialogTitle>
                 <AlertDialogDescription className="text-base">
                   This project is now 
-                  { project?.state === "live" 
+                  { project?.visibility === "public" 
                     ? " Public, are you sure to change the visibility to Private?" 
                     : " Private, are you sure to change the visibility to Public?" 
                   }
@@ -87,6 +99,18 @@ export default function ChangeVisibility({ project }: { project: any}) {
           </AlertDialogContent>
         </AlertDialog>
       </div>
+
+      <AlertDialog open={urlProject}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+              <AlertDialogTitle className="text-lg">Add URL</AlertDialogTitle>
+              <AlertDialogDescription className="text-base">You need add a URL to your project if you want make it public</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+              <AlertDialogAction onClick={ () => setUrlProject(false) }>Continue</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </section>
   )
 }

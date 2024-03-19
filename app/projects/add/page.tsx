@@ -17,8 +17,8 @@ type state = {
     valid: boolean,
     pristine: boolean
   },
-  state: {
-    value: 'live' | 'pending',
+  visibility: {
+    value: 'public' | 'private',
     valid: boolean,
     pristine: boolean
   },
@@ -34,7 +34,7 @@ type actions = {
   valid: boolean,
   setName: (value: string) => void,
   setDescription: (value: string) => void,
-  setState: (value: 'live' | 'pending') => void,
+  setVisibility: (value: 'public' | 'private') => void,
   setUrl: (value: string) => void,
   reset: () => void,
   validate: () => void,
@@ -43,7 +43,7 @@ type actions = {
 const initialState: state = {
   name: { value: '', valid: false, pristine: true },
   description: { value: '', valid: false, pristine: true },
-  state: { value: 'live', valid: true, pristine: true },
+  visibility: { value: 'public', valid: true, pristine: true },
   url: { value: '', valid: false, pristine: true },
 }
 
@@ -57,14 +57,14 @@ const useStore = create<state & actions>((set, get) => ({
     set({ description: { value, valid: value.trim() !== '', pristine: false }}),
     get().validate()
   },
-  setState: (value: 'live' | 'pending') => {
-    set({ state: { value, valid: true, pristine: false } })
-    if (value === 'pending') set({ url: { ...get().url, valid: true }});
+  setVisibility: (value: 'public' | 'private') => {
+    set({ visibility: { value, valid: true, pristine: false } })
+    if (value === 'private') set({ url: { ...get().url, valid: true }});
     get().validate()
   },
   setUrl: (value: string) => {
     const valid = () => {
-      if (get().state.value === 'live') return value.trim() !== '';
+      if (get().visibility.value === 'public') return value.trim() !== '';
       return true;
     }
     set({ url: { value, valid: valid(), pristine: false } }),
@@ -107,7 +107,7 @@ export default function Page() {
       formName: formState.name.value, 
       formDescription: formState.description.value, 
       formUrl: formState.url.value, 
-      formState: formState.state.value
+      formVisibility: formState.visibility.value
     });
 
     if (error) {
@@ -147,14 +147,14 @@ export default function Page() {
         </section>
 
         <section className="flex flex-col">
-          <label className="text-lg pl-1">Visibility<span> - { formState.state.value === 'live' ? 'Public' : 'Private' }</span></label>
+          <label className="text-lg pl-1">Visibility<span> - { formState.visibility.value === 'public' ? 'Public' : 'Private' }</span></label>
           <div className="flex flex-col gap-5">
 
             <div 
               className={`p-1 bg-white-primary rounded-xl border border-gray-200 cursor-pointer`} 
-              onClick={ () => formState.setState('live') }
+              onClick={ () => formState.setVisibility('public') }
               >
-              <div className={`p-4 flex flex-col transition-colors rounded-xl border-2 ${ formState.state.value === 'live' ? 'border-black-primary' : 'border-gray-200' }`}>
+              <div className={`p-4 flex flex-col transition-colors rounded-xl border-2 ${ formState.visibility.value === 'public' ? 'border-black-primary' : 'border-gray-200' }`}>
                 <h3>Public</h3>
                 <p className="px-5 py-2 text-gray-600">
                   Make your project visible to everyone. Get feedback and collaboration from other users. This option is ideal if you are looking to share your work with the world 
@@ -165,9 +165,9 @@ export default function Page() {
 
             <div 
               className={`p-1 bg-white-primary rounded-xl border border-gray-200 cursor-pointer`} 
-              onClick={ () => formState.setState('pending') }
+              onClick={ () => formState.setVisibility('private') }
               >
-              <div className={`p-4 flex flex-col transition-colors rounded-xl border-2 ${ formState.state.value === 'pending' ? 'border-black-primary' : 'border-gray-200' }`}>
+              <div className={`p-4 flex flex-col transition-colors rounded-xl border-2 ${ formState.visibility.value === 'private' ? 'border-black-primary' : 'border-gray-200' }`}>
                 <h3>Private</h3>
                 <p className="px-5 py-2 text-gray-600">
                   Control who accesses your project. Ideal for confidential or private work. This option gives you control over the privacy of your work, ensuring that only you can access it. 

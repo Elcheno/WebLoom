@@ -3,6 +3,7 @@ import Card from "../../card";
 import ChartGradient from "../../charts/chartGradient";
 import * as echarts from 'echarts';
 import { countCoincidences } from "@/app/lib/utils";
+import { formatDate } from "@/utils/utils";
 
 export default async function ProjectsGradiantCard() {
   const projectsLive = await fetchProjectsLive();
@@ -15,17 +16,17 @@ export default async function ProjectsGradiantCard() {
   xAxis.add('');
 
   allProjects?.map((project: any) => {
-    xAxis.add(project?.date)
+    xAxis.add(formatDate(project?.created_at));
   });
 
   const xAxisOptions = [...xAxis];
 
-  const liveValues = countCoincidences(projectsLive ?? [], xAxisOptions);
-  const pendingValues = countCoincidences(projectsPending ?? [], xAxisOptions);
+  const publicValues = countCoincidences(projectsLive ?? [], xAxisOptions);
+  const privateValues = countCoincidences(projectsPending ?? [], xAxisOptions);
   
   const values = [
     {
-      name: 'Pending',
+      name: 'Private',
       type: 'line',
       stack: 'Total',
       smooth: true,
@@ -49,10 +50,10 @@ export default async function ProjectsGradiantCard() {
       emphasis: {
         focus: 'series'
       },
-      data: pendingValues
+      data: privateValues
     },
     {
-      name: 'Live',
+      name: 'Public',
       type: 'line',
       stack: 'Total',
       smooth: true,
@@ -76,7 +77,7 @@ export default async function ProjectsGradiantCard() {
       emphasis: {
         focus: 'series'
       },
-      data: liveValues
+      data: publicValues
     }
   ]
 

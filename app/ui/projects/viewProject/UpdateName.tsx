@@ -1,5 +1,6 @@
 "use client";
 
+import { updateNameProject } from "@/app/lib/actions";
 import { 
   AlertDialog,
   AlertDialogTrigger,
@@ -10,30 +11,39 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle, } from "@/components/ui/alert-dialog";
-import { Trash2 } from "lucide-react";
-import { removeProject } from "@/app/lib/actions";
+import { formatName } from "@/utils/utils";
+import { Pencil } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "sonner";
-import { useRouter } from 'next/navigation';
 
-export default function DeleteProject({ project }: { project: any}) {
+export default function UpdateName({ project }: { project: any }) {
+  const [name, setName] = useState(project?.name);
   const router = useRouter();
 
-  const handlerDeleteProject = async () => {
-    const [data, error] = await removeProject({ id: project?.id });
+  const handlerSubmit = async () => {
+    if (!name.trim()) {
+      toast.warning('Invalid name');
+      return;
+    }
+
+    const [data, error] = await updateNameProject({ id: project.id, name: name.trim()});
 
     if (!error) {
-      toast.success(`Project ${project?.name} deleted successfully`);
-      router.push('/projects/list');
+      toast.success(`Project updated successfully`);
+      router.push(`/projects/${formatName(name)}`);
+      
     } else {
-      toast.error(`Error deleting project`);
+      toast.error(`Error updating project`);
+
     }
   }
 
-  return(
+  return (
     <section className="border-2 border-gray-50 grid grid-cols-4 grid-rows-1 gap-2 rounded-[2rem] p-4">
       <div className="col-start-1 col-end-4 flex flex-col gap-2">
         <div>
-          <h3 className="text-lg">Delete Project</h3>
+          <h3 className="text-lg">Edit name project</h3>
         </div>
         <div className="pl-4">
           <p>
@@ -47,21 +57,29 @@ export default function DeleteProject({ project }: { project: any}) {
           <AlertDialogTrigger>
             <button className="bg-black-primary text-white-primary p-1 rounded-full border border-gray-50">
               <div className="flex gap-1 items-center justify-center px-2 py-1 border-2 border-black-primary hover:border-[#EDFD93] transition-colors rounded-full">
-                <Trash2 className="w-4 h-4 mr-2" />
-                Delete Project
+                <Pencil className="w-4 h-4 mr-2" />
+                Edit name
               </div>
           </button>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-                <AlertDialogTitle className="text-lg">Delete Project</AlertDialogTitle>
+                <AlertDialogTitle className="text-lg">Edit name</AlertDialogTitle>
                 <AlertDialogDescription className="text-base">
-                  Are you sure you want to delete this project?
+                  <div className="flex flex-col gap-2">
+                   <label htmlFor="name" className="pl-1">Name</label>
+                   <input 
+                      type="text" 
+                      className="border border-gray-200 py-2 px-4 bg-gray-50 rounded-full text-black-primary"
+                      defaultValue={ name }
+                      onChange={ (e) => setName(e.target.value) }
+                    />
+                  </div>
                 </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={ () => handlerDeleteProject() }>Continue</AlertDialogAction>
+                <AlertDialogAction onClick={ () => handlerSubmit() }>Save</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>

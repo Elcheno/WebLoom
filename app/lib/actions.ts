@@ -10,7 +10,7 @@ const CreateProjectSchema = z.object({
   name: z.string(),
   description: z.string(),
   url: z.string(),
-  state: z.enum(["live", "pending"]),
+  visibility: z.enum(["public", "private"]),
   date: z.string()
 });
 
@@ -21,30 +21,27 @@ const CreateProjectFormSchema = CreateProjectSchema.omit({
 });
 
 export async function addProject(
-  { formName, formDescription, formUrl, formState }
+  { formName, formDescription, formUrl, formVisibility }
   : { 
       formName: string, 
       formDescription: string, 
       formUrl: string, 
-      formState: string 
+      formVisibility: string 
   }) {  
-    const { name, description, url, state } = CreateProjectFormSchema.parse({ 
+    const { name, description, url, visibility } = CreateProjectFormSchema.parse({ 
       name: formName, 
       description: formDescription, 
       url: formUrl, 
-      state: formState 
+      visibility: formVisibility 
     });
 
     const supabase = createClient();
-
-    const date = new Date().toJSON().slice(0, 10);
-
-    // await new Promise((resolve) => setTimeout(resolve, 500));
+    const { data: { user } } = await supabase.auth.getUser();
 
     const { data, error } = await supabase
       .from("projects")
       .insert([
-        { name, description, url, state, users_id: 1, date }
+        { name, description, url, visibility, user_id: user?.id }
       ]);
 
     if (!error) {
@@ -57,7 +54,7 @@ export async function addProject(
 export async function removeProject(
   { id }
   : {
-    id: number
+    id: string
   }
 ) {
   const supabase = createClient();
@@ -74,17 +71,18 @@ export async function removeProject(
   return [data, error];
 }
 
-export async function changeVisibilityLive(
+export async function changeVisibilityPublic(
   { id }
   : {
-    id: number
+    id: string
   }
 ) {
+
   const supabase = createClient();
 
   const { data, error } = await supabase
     .from("projects")
-    .update({ state: "live" })
+    .update({ visibility: "public" })
     .eq("id", id);
 
   if (!error) {
@@ -94,17 +92,105 @@ export async function changeVisibilityLive(
   return [data, error];
 }
 
-export async function changeVisibilityPending(
+export async function changeVisibilityPrivate(
   { id }
   : {
-    id: number
+    id: string
   }
+) {
+
+  const supabase = createClient();
+
+  const { data, error } = await supabase
+    .from("projects")
+    .update({ visibility: "private" })
+    .eq("id", id);
+
+  console.log(data, error);
+  
+
+  if (!error) {
+    revalidatePath("/projects/**");
+  }
+
+  return [data, error];
+}
+
+export async function addUrlToProject(
+  { id, url }
+  : {
+    id: number,
+    url: string
+  } 
 ) {
   const supabase = createClient();
 
   const { data, error } = await supabase
     .from("projects")
-    .update({ state: "pending" })
+    .update({ url: url })
+    .eq("id", id);
+
+  if (!error) {
+    revalidatePath("/projects/**");
+  }
+
+  return [data, error];
+}
+
+export async function updateNameProject(
+  { id, name }
+  : {
+    id: string,
+    name: string
+  } 
+) {
+  const supabase = createClient();
+
+  const { data, error } = await supabase
+    .from("projects")
+    .update({ name: name })
+    .eq("id", id);
+
+  if (!error) {
+    revalidatePath("/projects/**");
+  }
+
+  return [data, error];
+}
+
+export async function updateDescriptionProject(
+  { id, description }
+  : {
+    id: string,
+    description: string
+  } 
+) {
+  const supabase = createClient();
+
+  const { data, error } = await supabase
+    .from("projects")
+    .update({ description: description })
+    .eq("id", id);
+
+  if (!error) {
+    revalidatePath("/projects/**");
+  }
+
+  return [data, error];
+}
+
+export async function updateUrlProject(
+  { id, url }
+  : {
+    id: string,
+    url: string
+  } 
+) {
+  const supabase = createClient();
+
+  const { data, error } = await supabase
+    .from("projects")
+    .update({ url: url })
     .eq("id", id);
 
   if (!error) {

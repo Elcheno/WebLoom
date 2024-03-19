@@ -1,6 +1,6 @@
 "use client";
 
-import { changeVisibilityLive, changeVisibilityPending, removeProject } from "@/app/lib/actions";
+import { changeVisibilityPublic, changeVisibilityPrivate, removeProject } from "@/app/lib/actions";
 import { 
   AlertDialog, 
   AlertDialogAction,
@@ -16,31 +16,44 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { formatName } from "@/utils/utils";
 import { Lock, Trash2, Pencil } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 
 export default function ProjectListDropdown({ project }: any) {
   const [visibility, setVisibility] = useState(false);
   const [deleteProject, setDeleteProject] = useState(false);
+  const [urlProject, setUrlProject] = useState(false);
 
   const handleVisibility = async (project: any) => {
-
-    if (project.state === "live") {
-      const [data, error] = await changeVisibilityPending({ id: project.id });
+    if (project.visibility === "public") {
+      const [data, error] = await changeVisibilityPrivate({ id: project.id });
       
       if (!error) {
         toast.success(`Project ${project.name} is now Private`);
+
       } else {
-        toast.error(`Error deleting project ${project.name}`);
+        toast.error(`Error change visibility project`);
+
       }
     } else {
-      const [data, error] = await changeVisibilityLive({ id: project.id });
+
+      if (!project.url) {
+        setVisibility(false);
+        setUrlProject(true);
+        return;
+      }
+
+      const [data, error] = await changeVisibilityPublic({ id: project.id });
       
       if (!error) {
         toast.success(`Project ${project.name} is now Public`);
+
       } else {
-        toast.error(`Error deleting project ${project.name}`);
+        toast.error(`Error change visibility project`);
+
       }
     }
 
@@ -80,9 +93,11 @@ export default function ProjectListDropdown({ project }: any) {
             Delete Project
           </DropdownMenuItem>
 
-          <DropdownMenuItem className="cursor-pointer text-base p-2">
-            <Pencil className="w-4 h-4 mr-2" />
-            Edit Project
+          <DropdownMenuItem className="cursor-pointer text-base p-2">   
+            <Link href={ `/projects/${ formatName(project.name) }` } className="flex items-center">
+              <Pencil className="w-4 h-4 mr-2" />
+              Edit project
+            </Link>
           </DropdownMenuItem>
 
         </DropdownMenuContent>
@@ -91,12 +106,12 @@ export default function ProjectListDropdown({ project }: any) {
       <AlertDialog open={visibility}>
         <AlertDialogContent>
           <AlertDialogHeader>
-              <AlertDialogTitle className="text-lg">Change Visibility to { project.state === "live" ? "Private" : "Public" }</AlertDialogTitle>
+              <AlertDialogTitle className="text-lg">Change Visibility to { project.visibility === "public" ? "Private" : "Public" }</AlertDialogTitle>
               <AlertDialogDescription className="text-base">
                 This project is now 
-                { project.state === "live" 
-                  ? "Public, are you sure to change the visibility to Private?" 
-                  : "Private, are you sure to change the visibility to Public?" 
+                { project.visibility === "public" 
+                  ? " Public, are you sure to change the visibility to Private?" 
+                  : " Private, are you sure to change the visibility to Public?" 
                 }
               </AlertDialogDescription>
           </AlertDialogHeader>
@@ -110,8 +125,8 @@ export default function ProjectListDropdown({ project }: any) {
       <AlertDialog open={deleteProject}>
         <AlertDialogContent>
           <AlertDialogHeader>
-              <AlertDialogTitle className="text-base">Delete Project</AlertDialogTitle>
-              <AlertDialogDescription>Are you sure?</AlertDialogDescription>
+              <AlertDialogTitle className="text-lg">Delete Project</AlertDialogTitle>
+              <AlertDialogDescription className="text-base">Are you sure?</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
               <AlertDialogCancel onClick={ () => setDeleteProject(false) }>Cancel</AlertDialogCancel>
@@ -119,6 +134,18 @@ export default function ProjectListDropdown({ project }: any) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <AlertDialog open={urlProject}>
+              <AlertDialogContent>
+          <AlertDialogHeader>
+              <AlertDialogTitle className="text-lg">Add URL</AlertDialogTitle>
+              <AlertDialogDescription className="text-base">You need add a URL to your project if you want make it public</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+              <AlertDialogAction onClick={ () => setUrlProject(false) }>Continue</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+    </AlertDialog>
     </>
   )
 }

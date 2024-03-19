@@ -8,7 +8,7 @@ export default async function CountPendingProjectsCars() {
   return (
     <Card>
       <div className="w-full h-full p-5 flex flex-col">
-        <h3 className="text-xl w-full">Pending Projects</h3>
+        <h3 className="text-xl w-full">Private Projects</h3>
         <div className="flex justify-center items-center h-full">
           <p className="text-[4rem]">{ numberProjects }</p>
         </div>

@@ -10,8 +10,8 @@ export default async function ProjectsCircleCard() {
   const numberProjectsPending = projectsPending ? projectsPending.length : 0;
 
   const values = [
-    { value: numberProjectsLive, name: 'Live' },
-    { value: numberProjectsPending, name: 'Pending' }
+    { value: numberProjectsLive, name: 'Public' },
+    { value: numberProjectsPending, name: 'Private' }
   ]
 
   return(

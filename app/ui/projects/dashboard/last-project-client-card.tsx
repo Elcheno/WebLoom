@@ -3,13 +3,14 @@
 import { useState } from "react";
 import Card from "../../card";
 import { ArrowUpRightFromSquare } from "lucide-react";
+import { formatDate, formatVisibility } from "@/utils/utils";
 
 export default function LastProjectClientCard({ lastProject }: { 
   lastProject: { 
     name: string, 
     url: string, 
-    state: string, 
-    date: string, 
+    visibility: string, 
+    created_at: string, 
     description: string
   } 
 }) {
@@ -36,8 +37,8 @@ export default function LastProjectClientCard({ lastProject }: {
 
         <section className="flex flex-col justify-between bg-white-primary backdrop-blur-[2.5px] bg-opacity-30 rounded-[2rem] p-5 h-1/6 transition-all duration-300 w-full backdrop-layout-card">
           <div className="flex flex-row justify-between">
-            <div><p className="text-lg">{ lastProject.state }</p></div>
-            <div><p className="text-lg">{ lastProject.date }</p></div>
+            <div><p className="text-lg">{ formatVisibility(lastProject.visibility) }</p></div>
+            <div><p className="text-lg">{ formatDate(lastProject.created_at) }</p></div>
           </div>
           
           {

@@ -11,12 +11,12 @@ export default function ProjectsList({
   searchParams: {
     query?: string,
     page?: string,
-    state?: string
+    visibility?: string
   }
 }) {
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
-  const state = searchParams?.state || 'all';
+  const visibility = searchParams?.visibility || 'all';
 
   return (
     <main className="col-start-2 col-end-12 flex flex-col">
@@ -29,7 +29,7 @@ export default function ProjectsList({
       <section className="w-full h-full px-10 grid grid-cols-12 grid-rows-1 gap-3">
         <div className="col-start-1 col-end-13">
           <Suspense fallback={<SkeletonProjectList />}>
-            <ProjectList query={query} currentPage={currentPage} state={state}/>
+            <ProjectList query={query} currentPage={currentPage} visibility={visibility}/>
           </Suspense>
         </div>
       </section>

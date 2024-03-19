@@ -15,31 +15,31 @@ export default function FilterProjectList() {
   const searchParams = useSearchParams();
   const { replace } = useRouter();
 
-  const handlerChangeState = (state: string) => {
+  const handlerChangeState = (visibility: string) => {
     const params = new URLSearchParams(searchParams);
-    params.set('state', state);
+    params.set('visibility', visibility);
     replace(`${pathname}?${params.toString()}`)
   }
 
   let defaultValue: string = 'all';
   const params = new URLSearchParams(searchParams);
 
-  if (params.get('state')) {
-    defaultValue = params.get('state') || 'all';
+  if (params.get('visibility')) {
+    defaultValue = params.get('visibility') || 'all';
   } else {
-    params.set('state', defaultValue);
+    params.set('visibility', defaultValue);
     replace(`${pathname}?${params.toString()}`)
   }
 
   return (
-    <Select defaultValue={ defaultValue } onValueChange={ (state) => handlerChangeState(state) }>
+    <Select defaultValue={ defaultValue } onValueChange={ (visibility) => handlerChangeState(visibility) }>
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder="State" />
       </SelectTrigger>
       <SelectContent>
         <SelectItem value="all">All</SelectItem>
-        <SelectItem value="live">Public</SelectItem>
-        <SelectItem value="pending">Private</SelectItem>
+        <SelectItem value="public">Public</SelectItem>
+        <SelectItem value="private">Private</SelectItem>
       </SelectContent>
     </Select>
   )
