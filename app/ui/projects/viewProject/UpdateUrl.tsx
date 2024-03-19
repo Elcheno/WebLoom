@@ -11,15 +11,16 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle, } from "@/components/ui/alert-dialog";
+import { projectEntity } from "@/types/types";
 import { Pencil } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export default function UpdateUrl({ project }: { project: any }) {
+export default function UpdateUrl({ project }: { project: projectEntity }) {
   const [url, setUrl] = useState(project?.url);
 
   const handlerSubmit = async () => {
-    const [data, error] = await updateUrlProject({ id: project.id, url: url.trim()});
+    const [data, error] = await updateUrlProject({ id: project.id, url: url?.trim() ?? null });
 
     if (!error) {
       toast.success(`Project updated successfully`);
@@ -46,12 +47,12 @@ export default function UpdateUrl({ project }: { project: any }) {
       <div className="col-start-4 col-end-5 flex items-center justify-center">
         <AlertDialog>
           <AlertDialogTrigger>
-            <button className="bg-black-primary text-white-primary p-1 rounded-full border border-gray-50">
+            <div className="bg-black-primary text-white-primary p-1 rounded-full border border-gray-50">
               <div className="flex gap-1 items-center justify-center px-2 py-1 border-2 border-black-primary hover:border-[#EDFD93] transition-colors rounded-full">
                 <Pencil className="w-4 h-4 mr-2" />
                 Edit url
               </div>
-          </button>
+            </div>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
@@ -62,7 +63,7 @@ export default function UpdateUrl({ project }: { project: any }) {
                     <input 
                       type="text" 
                       className="border border-gray-200 py-2 px-4 bg-gray-50 rounded-full text-black-primary"
-                      defaultValue={ url }
+                      defaultValue={ url ?? '' }
                       onChange={ (e) => setUrl(e.target.value) }
                     />
                   </div>

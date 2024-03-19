@@ -3,12 +3,13 @@
 import { Copy } from "lucide-react";
 import { toast } from "sonner";
 import { useState } from "react";
+import { projectEntity } from "@/types/types";
 
-export default function CopyClipboard({ project }: { project: any }) {
+export default function CopyClipboard({ project }: { project: projectEntity }) {
   const [ clipboard, setClipboard ] = useState<boolean>(false);
 
   const handlerCopyClipboard = () => {
-    navigator.clipboard.writeText(project?.url);
+    navigator.clipboard.writeText(project?.url ?? '');
     toast.success('URL copied to clipboard');
     setClipboard(true);
     setTimeout(() => {
@@ -23,7 +24,9 @@ export default function CopyClipboard({ project }: { project: any }) {
           ? (
             <>
               <a href={ project?.url } target="_blank" rel="noreferrer" className="text-lg hover:underline">{ project?.url }</a>
-              <Copy className={`w-5 h-5 cursor-pointer ${clipboard ? 'animate-scale-pulse' : ''}`} onClick={ () => handlerCopyClipboard() } />
+              <button onClick={ () => handlerCopyClipboard() }>
+                <Copy className={`w-5 h-5 cursor-pointer ${clipboard ? 'animate-scale-pulse' : ''}`} />
+              </button>
             </>
           ) : (
             <span className="text-lg">Try to add a URL</span>

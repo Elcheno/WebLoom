@@ -6,7 +6,7 @@ import {
   SkeletonGradiantChartCard
 } from "../../ui/projects/skeletons";
 import { Suspense } from "react";
-import LastProyectCard from "../../ui/projects/dashboard/last-project-card";
+import LastProyectCard from "../../ui/projects/dashboard/last-project-card-server";
 import CountLiveProjectsCard from "../../ui/projects/dashboard/count-public-projects-card";
 import CountPendingProjectsCars from "../../ui/projects/dashboard/count-pending-projects-card";
 import ProfileCard from "../../ui/projects/dashboard/profile-card";

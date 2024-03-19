@@ -1,8 +1,9 @@
 import { fetchProjectsPending } from "@/app/lib/data";
 import Card from "../../card";
+import { projectEntity } from "@/types/types";
 
 export default async function CountPendingProjectsCars() {
-  const projectsPending = await fetchProjectsPending();
+  const projectsPending: projectEntity[] | null = await fetchProjectsPending();
   const numberProjects = projectsPending ? projectsPending.length : 0;
 
   return (

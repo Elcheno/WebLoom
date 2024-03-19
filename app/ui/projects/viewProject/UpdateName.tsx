@@ -11,13 +11,14 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle, } from "@/components/ui/alert-dialog";
+import { projectEntity } from "@/types/types";
 import { formatName } from "@/utils/utils";
 import { Pencil } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export default function UpdateName({ project }: { project: any }) {
+export default function UpdateName({ project }: { project: projectEntity }) {
   const [name, setName] = useState(project?.name);
   const router = useRouter();
 
@@ -55,12 +56,12 @@ export default function UpdateName({ project }: { project: any }) {
       <div className="col-start-4 col-end-5 flex items-center justify-center">
         <AlertDialog>
           <AlertDialogTrigger>
-            <button className="bg-black-primary text-white-primary p-1 rounded-full border border-gray-50">
+            <div className="bg-black-primary text-white-primary p-1 rounded-full border border-gray-50">
               <div className="flex gap-1 items-center justify-center px-2 py-1 border-2 border-black-primary hover:border-[#EDFD93] transition-colors rounded-full">
                 <Pencil className="w-4 h-4 mr-2" />
                 Edit name
               </div>
-          </button>
+            </div>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>

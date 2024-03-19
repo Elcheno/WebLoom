@@ -7,9 +7,10 @@ import { fetchProjectByName } from '@/app/lib/data';
 import UpdateName from "./UpdateName";
 import UpdateDescription from "./UpdateDescription";
 import UpdateUrl from "./UpdateUrl";
+import { projectEntity } from "@/types/types";
 
 export default async function PageViewProject({ params }: { params: any}) {  
-  const project = (await fetchProjectByName({ name: unFormatName(params.name) }))?.[0];
+  const project: projectEntity = (await fetchProjectByName({ name: unFormatName(params.name) }))?.[0];
 
   return (
     <>

@@ -8,7 +8,8 @@ import {
 } from "@/components/ui/hover-card";
 import ProjectListDropdown from "./project-list-dropdown";
 import Link from "next/link";
-import { formatName } from "@/utils/utils";
+import { formatDate, formatName } from "@/utils/utils";
+import { projectEntity } from "@/types/types";
 
 export default async function ProjectList({
   query,
@@ -19,12 +20,12 @@ export default async function ProjectList({
   currentPage: number;
   visibility: string;
 }) {
-  const projects = await fetchProjectsFilteredPage({ query, currentPage, visibility });
+  const projects: projectEntity[] | null = await fetchProjectsFilteredPage({ query, currentPage, visibility });
 
   return (
     <div className="w-full grid grid-cols-1 xl:grid-cols-2 gap-3">
       {
-        projects?.map((project: any) => {
+        projects?.map((project: projectEntity) => {
           return (
             <Card key={ project.id } classList={`p-5 flex flex-col hover:bg-white border border-gray-50 hover:shadow-sm transition-all duration-100 min-h-[225px] max-h-[500px]`}>
               <div className="flex justify-between">
@@ -71,7 +72,7 @@ export default async function ProjectList({
                   </HoverCardContent>
                 </HoverCard>
 
-                <span className="py-1 px-2 bg-gray-50 rounded-lg">{ new Date(project.created_at).toISOString().split('T')[0] }</span>
+                <span className="py-1 px-2 bg-gray-50 rounded-lg">{ formatDate(project.created_at) }</span>
               </div>
             </Card>
           )

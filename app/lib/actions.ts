@@ -183,7 +183,7 @@ export async function updateUrlProject(
   { id, url }
   : {
     id: string,
-    url: string
+    url: string | null
   } 
 ) {
   const supabase = createClient();

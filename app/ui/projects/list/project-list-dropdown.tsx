@@ -16,13 +16,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { projectEntity } from "@/types/types";
 import { formatName } from "@/utils/utils";
 import { Lock, Trash2, Pencil } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export default function ProjectListDropdown({ project }: any) {
+export default function ProjectListDropdown({ project }: { project: projectEntity }) {
   const [visibility, setVisibility] = useState(false);
   const [deleteProject, setDeleteProject] = useState(false);
   const [urlProject, setUrlProject] = useState(false);
@@ -60,7 +61,7 @@ export default function ProjectListDropdown({ project }: any) {
     setVisibility(false);
   }
 
-  const handleDelete = async (project: any) => {
+  const handleDelete = async (project: projectEntity) => {
     const [data, error] = await removeProject({ id: project.id });
 
     if (!error) {

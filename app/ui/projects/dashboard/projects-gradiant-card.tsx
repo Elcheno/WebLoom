@@ -1,14 +1,15 @@
 import { fetchProjects, fetchProjectsLive, fetchProjectsPending } from "@/app/lib/data";
 import Card from "../../card";
-import ChartGradient from "../../charts/chartGradient";
+import ChartGradient from "../../charts/chart-gradient";
 import * as echarts from 'echarts';
 import { countCoincidences } from "@/app/lib/utils";
 import { formatDate } from "@/utils/utils";
+import { projectEntity } from "@/types/types";
 
 export default async function ProjectsGradiantCard() {
-  const projectsLive = await fetchProjectsLive();
-  const projectsPending = await fetchProjectsPending();
-  const allProjects = await fetchProjects();
+  const projectsLive: projectEntity[] | null = await fetchProjectsLive();
+  const projectsPending: projectEntity[] | null = await fetchProjectsPending();
+  const allProjects: projectEntity[] | null = await fetchProjects();
 
   const numberProjects = allProjects ? allProjects.length : 0;
 
@@ -93,7 +94,15 @@ export default async function ProjectsGradiantCard() {
             <span className="text-[4rem]">{ numberProjects }</span>
           </div>
           <div className="w-fit px-5">
-            <ChartGradient valueString={valueString} xAxisOptions={xAxisOptions}/>
+            {
+              allProjects && allProjects?.length > 2 ? (
+                <ChartGradient values={valueString} />
+              ) : (
+                <div className="flex justify-center items-center h-[300px] w-[600px] 3xl:h-[450px] 3xl:w-[750px] m-auto">
+                  <p className="text-gray-400 text-center text-lg w-2/3">You dont have suficient projects to show a chart</p>
+                </div>
+              )
+            }
           </div>
         </div>
       </div>

@@ -1,8 +1,9 @@
 import { fetchProjectsLive } from "@/app/lib/data";
 import Card from "../../card";
+import { projectEntity } from "@/types/types";
 
 export default async function CountPublicProjectsCard() {
-  const projectsLive = await fetchProjectsLive();
+  const projectsLive: projectEntity[] | null = await fetchProjectsLive();
   const numberProjects = projectsLive ? projectsLive.length : 0;
 
   return (

@@ -1,4 +1,4 @@
-import LoginButton from "./LoginButton"
+import LoginButton from "./sign-in-button"
 import Logo from "./logo"
 import NavLinks from "./nav-links"
 
