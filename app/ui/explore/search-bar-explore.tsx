@@ -17,7 +17,6 @@ export default function SearchBarExplore() {
   const handleSearch = useDebouncedCallback((term: string) => {
     const params = new URLSearchParams(searchParams);
     if (term) {
-      if (term.startsWith('@')) term = term.replace('@', '_');
       params.set('query', term);
     } else {
       params.delete('query');

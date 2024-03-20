@@ -1,6 +1,6 @@
 import { fetchProjectsFilteredPagePublic } from "@/app/lib/data-public";
 import { projectPublic } from "@/types/types";
-import Card from "../card";
+import Card from "../../card";
 import Link from "next/link";
 import { formatDate, formatName } from "@/utils/utils";
 import { ArrowUpRightFromSquare, Heart, Pin, Repeat2 } from "lucide-react";
@@ -38,8 +38,8 @@ export default async function ProjectList({ query, currentPage }: { query: strin
                   <div className="flex self-end w-full justify-between">
                     <div className="flex gap-5">
                       <button><Heart className="w-6 h-6 text-gray-600"/></button>
-                      <button><Pin className="w-6 h-6 text-gray-600"/></button>
                       <button><Repeat2 className="w-6 h-6 text-gray-600"/></button>
+                      <button><Pin className="w-6 h-6 text-gray-600"/></button>
                     </div>
                     <div>
                       <span className="py-1 px-2 bg-gray-50 rounded-lg">{ formatDate(project.created_at) }</span>

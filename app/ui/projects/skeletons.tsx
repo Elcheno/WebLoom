@@ -68,7 +68,7 @@ export function SkeletonLastProyectCard() {
 
 export function SkeletonProjectList() {
   return (
-    <div className="w-full grid grid-cols-2 gap-3">
+    <div className="w-full grid grid-cols-1 3xl:grid-cols-2 gap-3">
       {
         Array.from({ length: 4 }).map((_, index) => {
           return (
@@ -93,5 +93,21 @@ export function SkeletonProjectView () {
         <div className="w-full h-[264px]"></div>
       </Card> 
     </>
+  )
+}
+
+export function SkeletonProjectListExplore() {
+  return (
+    <div className="w-2/4 grid grid-cols-1 gap-3 mx-auto">
+      {
+        Array.from({ length: 2 }).map((_, index) => {
+          return (
+            <Card classList={`bg-slate-200 animate-pulse`}>
+              <div className="w-64 h-64"></div>
+            </Card>
+          )
+        })
+      }
+    </div>
   )
 }

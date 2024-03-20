@@ -18,7 +18,7 @@ const links = [
   },
   {
     name: 'Explore',
-    href: '/explore',
+    href: '/explore/projects',
     icon: Compass
   },
   {
