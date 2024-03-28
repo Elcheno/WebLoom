@@ -14,7 +14,7 @@ export default function ExploreLayout({
 
       <section className="w-full grid grid-cols-12 grid-rows-1">
 
-        <nav className="col-start-1 col-end-2 h-full pt-10 pl-10">
+        <nav className="col-start-1 col-end-13 lg:col-end-2 h-full pt-10 lg:pl-10 flex justify-center">
           <ExploreNavBar />
         </nav>
 

@@ -13,7 +13,7 @@ export default async function LoginButton() {
       ? (
         <SignOutButton />
       ) : (
-        <Link href={'/sign-in'} className="flex gap-2 items-center py-2 px-4 rounded-full bg-black-primary text-white-primary">
+        <Link href={'/sign-in'} className="flex gap-2 items-center py-2 px-4 rounded-full bg-black-primary text-white-primary text-nowrap">
           <LogIn className="w-6 h-6"/>
           Sign in
         </Link>

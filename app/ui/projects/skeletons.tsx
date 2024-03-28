@@ -98,12 +98,12 @@ export function SkeletonProjectView () {
 
 export function SkeletonProjectListExplore() {
   return (
-    <div className="w-2/4 grid grid-cols-1 gap-3 mx-auto">
+    <div className="lg:mx-24 xl:mx-44 2xl:mx-64 3xl:mx-96 grid grid-cols-1 gap-3 mx-auto">
       {
         Array.from({ length: 2 }).map((_, index) => {
           return (
             <Card classList={`bg-slate-200 animate-pulse`}>
-              <div className="w-64 h-64"></div>
+              <div className="w-64 h-56"></div>
             </Card>
           )
         })

@@ -44,9 +44,7 @@ export async function fetchProfilesFilteredPagePublic({ query, currentPage }: { 
   .not("id", "eq", user?.id)
   .ilike("user_name", `%${query}%`)
   .order("created_at", { ascending: false })
-  .range(offset_init, offset_end);
+  .range(offset_init, offset_end)
 
-  console.log(users);
-  
   return users;
 } 

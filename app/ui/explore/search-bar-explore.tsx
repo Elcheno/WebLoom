@@ -28,7 +28,7 @@ export default function SearchBarExplore() {
   }, WAIT_BETWEEN_CHANGE);
 
   return (
-    <div className="w-2/4 mx-auto">
+    <div className="lg:mx-24 xl:mx-44 2xl:mx-64 3xl:mx-96 w-full mx-auto">
       <div className="flex flex-nowrap bg-white-primary justify-start items-center rounded-full border border-gray-200">
         <Search className={`w-6 h-6 ml-2 transition-colors ${ state ? "text-black-primary" : "text-gray-600" }`}/>
         <input 

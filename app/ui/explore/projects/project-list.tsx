@@ -10,7 +10,7 @@ export default async function ProjectList({ query, currentPage }: { query: strin
   const projects: projectPublic[] | null = await fetchProjectsFilteredPagePublic({ query, currentPage });
 
   return (
-    <div className="w-2/4 mx-auto grid grid-cols-1 gap-3">
+    <div className="lg:mx-24 xl:mx-44 2xl:mx-64 3xl:mx-96 grid grid-cols-1 gap-3">
       {
         projects && projects.length > 0 && (
           projects?.map((project: projectPublic) => {
