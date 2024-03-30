@@ -199,3 +199,35 @@ export async function updateUrlProject(
 
   return [data, error];
 }
+
+export async function likeProject({ id }: { id: string }) {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  const { data, error } = await supabase
+    .from("likes")
+    .insert({ user_id: user?.id, project_id: id });
+
+  if (!error) {
+    revalidatePath("/projects/**");
+  }
+
+  return [data, error];
+}
+
+export async function unlikeProject({ id }: { id: string }) {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  const { data, error } = await supabase
+    .from("likes")
+    .delete()
+    .eq("user_id", user?.id)
+    .eq("project_id", id);
+
+  if (!error) {
+    revalidatePath("/projects/**");
+  }
+
+  return [data, error];
+}

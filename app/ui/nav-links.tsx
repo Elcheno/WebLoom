@@ -36,8 +36,9 @@ export default function NavLinks() {
   pathname = pathname.split('/').slice(0, 2).join('/');
 
   useEffect(() => { 
-    navRef.current?.classList.add('hidden') 
-  }, [pathname])
+    navRef.current?.classList.add('hidden')
+    if (open === true) setOpen(false);
+  }, [pathname]);
 
   const handlerOpen = () => {
     navRef.current?.classList.toggle('hidden');
