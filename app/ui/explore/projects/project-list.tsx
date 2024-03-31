@@ -45,12 +45,12 @@ export default async function ProjectList({ query, currentPage }: { query: strin
                     
                   <div className="flex gap-6">
                     
-                    <ButtonLike />
+                    <ButtonLike like={ { id: project.like?.[0]?.id ?? '', project_id: project.id, state: project.like.length > 0 ? true : false, numberLikes: project.likes_count[0].count } }/>
 
                     <div className="flex gap-1">
                       <button><Repeat2 className="w-6 h-6 text-gray-600"/></button>
                       <span className="text-gray-600">12k</span>
-                    B</div>
+                    </div>
                    
                     <div className="flex gap-1">
                       <button><Pin className="w-6 h-6 text-gray-600"/></button>

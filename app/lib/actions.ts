@@ -206,10 +206,10 @@ export async function likeProject({ id }: { id: string }) {
 
   const { data, error } = await supabase
     .from("likes")
-    .insert({ user_id: user?.id, project_id: id });
+    .insert({ project_id: id, user_id: user?.id });
 
   if (!error) {
-    revalidatePath("/projects/**");
+    revalidatePath("/explore/projects");
   }
 
   return [data, error];
@@ -217,16 +217,14 @@ export async function likeProject({ id }: { id: string }) {
 
 export async function unlikeProject({ id }: { id: string }) {
   const supabase = createClient();
-  const { data: { user } } = await supabase.auth.getUser();
 
   const { data, error } = await supabase
     .from("likes")
     .delete()
-    .eq("user_id", user?.id)
-    .eq("project_id", id);
+    .eq("id", id);
 
   if (!error) {
-    revalidatePath("/projects/**");
+    revalidatePath("/explore/projects");
   }
 
   return [data, error];

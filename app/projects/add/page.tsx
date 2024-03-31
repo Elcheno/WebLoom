@@ -95,7 +95,7 @@ const useStore = create<state & actions>((set, get) => ({
 }))
 
 export default function Page() {
-  const formState = useStore();  
+  const formState = useStore();
   
   const handlerSubmit = async () => {   
     if (!formState.valid) {

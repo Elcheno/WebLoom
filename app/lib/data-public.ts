@@ -4,6 +4,8 @@ const ITEMS_PER_PAGE = 6;
 
 export async function fetchProjectsFilteredPagePublic({ query, currentPage }: { query: string, currentPage: number }) {
   const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
   await new Promise((resolve) => setTimeout(resolve, 250));
 
   const current_offset = ( ( currentPage - 1 ) * ITEMS_PER_PAGE );
@@ -17,12 +19,17 @@ export async function fetchProjectsFilteredPagePublic({ query, currentPage }: { 
     *,
     users (
       *
-    )
+    ),
+    likes_count:likes(count),
+    like:likes( id )
   `)
   .eq("visibility", "public")
+  .eq("like.user_id", user?.id)
   .ilike("name", `%${query}%`)
   .order("created_at", { ascending: false })
   .range(offset_init, offset_end);
+
+  // console.log(projects[0]);
 
   return projects;
 } 
