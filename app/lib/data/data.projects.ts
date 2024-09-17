@@ -1,10 +1,11 @@
-import { sql } from '@vercel/postgres';
+import { QueryResult, sql } from '@vercel/postgres';
 import { unstable_noStore as noStore } from 'next/cache';
 
 import {
-  Project,
+  Project as projectEntity,
 } from '@/app/lib/entity';
 import { getSession } from '../actions/actions.auth';
+import { Project } from '@/lib/types';
 
 export async function getPublicProjects() {
   // noStore();
@@ -24,27 +25,111 @@ export async function getPublicProjects() {
   // }
 }
 
+export async function getMyProjectsFiltered({
+  query,
+  visibility,
+  page
+} : {
+  query: string,
+  visibility: string,
+  page: number
+}) {
+  noStore();
+  try {
+    const session = await getSession();
+    const user_id = session?.user?.id;
+
+    if (!user_id) throw new Error('User not found');
+
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    
+    let data: QueryResult<projectEntity>;
+    
+    if (visibility === 'private') {
+      data = await sql<projectEntity>`
+        SELECT pr.*, priv.project_id as private_id FROM private priv
+        INNER JOIN projects pr ON priv.project_id = pr.id
+        WHERE pr.name ILIKE ${'%'+ query + '%'}
+        AND pr.user_id = ${user_id}
+        ORDER BY pr.created_at
+      `;
+    } else if (visibility === 'public') {
+      data = await sql<projectEntity>`
+        SELECT pr.*, pu.project_id as public_id FROM public pu
+        INNER JOIN projects pr ON pu.project_id = pr.id
+        WHERE pr.name ILIKE ${'%'+ query + '%'}
+        AND pr.user_id = ${user_id}
+        ORDER BY pr.created_at
+      `;
+    } else {
+      data = await sql<projectEntity>`
+        SELECT pr.*, pu.project_id as public_id, priv.project_id as private_id FROM projects pr
+        LEFT JOIN public as pu ON pu.project_id = pr.id
+        LEFT JOIN private as priv ON priv.project_id = pr.id
+        WHERE pr.name ILIKE ${'%'+ query + '%'}
+        AND pr.user_id = ${user_id}
+        ORDER BY pr.created_at
+      `;      
+    }
+  
+    const result = data.rows.map((project: projectEntity) => {
+      return {
+        id: project.id,
+        name: project.name,
+        simple_name: project.simple_name,
+        url: project.url,
+        user_id: project.user_id,
+        description: project.description,
+        created_at: project.created_at,
+        visibility: project.private_id 
+          ? 'private' 
+          : project.public_id && 'public'
+      } as Project
+    }) as Project[];
+
+    return result;
+  } catch (error) {
+    console.error('Error fetching my projects:', error);
+    throw new Error('Failed to fetch my projects')
+  }
+}
+
 export async function getMyPublicProjects() {
-  // noStore();
+  noStore();
 
-  // try {
-  //   const session = await getSession();
-  //   const user_id = session?.user?.id;
+  try {
+    const session = await getSession();
+    const user_id = session?.user?.id;
 
-  //   if (!user_id) throw new Error('User not found');
+    if (!user_id) throw new Error('User not found');
 
-  //   const data = await sql<Project>`
-  //     SELECT pr.* FROM public pu
-  //     INNER JOIN projects pr ON pu.project_id = pr.id
-  //     WHERE pr.user_id = ${user_id}
-  //     ORDER BY pu.created_at
-  //   `;
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
-  //   return data.rows;
-  // } catch (error) {
-  //   console.error('Error fetching public projects:', error);
-  //   throw new Error('Failed to fetch public projects')
-  // }
+    const data = await sql<projectEntity>`
+      SELECT pr.* FROM public pu
+      INNER JOIN projects pr ON pu.project_id = pr.id
+      WHERE pr.user_id = ${user_id}
+      ORDER BY pu.created_at
+    `;
+
+    const result = data.rows.map((project: projectEntity) => {
+      return {
+        id: project.id,
+        name: project.name,
+        simple_name: project.simple_name,
+        url: project.url,
+        user_id: project.user_id,
+        description: project.description,
+        created_at: project.created_at,
+        visibility: "public"
+      } as Project
+    }) as Project[]
+
+    return result;
+  } catch (error) {
+    console.error('Error fetching public projects:', error);
+    throw new Error('Failed to fetch public projects')
+  }
 }
 
 export async function getMyPrivateProjects() {
@@ -135,4 +220,47 @@ export async function getMyCountPrivateProjects() {
   //   console.error('Error fetching count private projects:', error);
   //   throw new Error('Failed to fetch count private projects')
   // }
+}
+
+export async function getMyProjectBySimpleName(simple_name: string) {
+  noStore();
+
+  try {
+    const session = await getSession();
+    const user_id = session?.user?.id;
+
+    if (!user_id) throw new Error('User not found');
+
+    // await new Promise((resolve) => setTimeout(resolve, 10000));
+
+    let response: Project | null = null;
+    
+    const data = await sql<projectEntity>`
+      SELECT pr.*, pu.project_id as public_id, priv.project_id as private_id FROM projects pr
+      LEFT JOIN public as pu ON pu.project_id = pr.id
+      LEFT JOIN private as priv ON priv.project_id = pr.id
+      WHERE pr.user_id = ${user_id}
+      AND pr.simple_name = ${simple_name}
+    `;
+
+    if (data.rows.length > 0) {
+      response = {
+        id: data.rows[0].id,
+        name: data.rows[0].name,
+        simple_name: data.rows[0].simple_name,
+        url: data.rows[0].url,
+        user_id: data.rows[0].user_id,
+        description: data.rows[0].description,
+        created_at: data.rows[0].created_at,
+        visibility: data.rows[0].private_id 
+          ? 'private' 
+          : data.rows[0].public_id && 'public'
+      } as Project;
+    }
+
+    return response;
+  } catch (error) {
+    console.error('Error fetching project:', error);
+    throw new Error('Failed to fetch project')
+  }
 }

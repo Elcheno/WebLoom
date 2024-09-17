@@ -16,25 +16,25 @@ import {
 const components: { title: string; href: string; description: string }[] = [
   {
     title: "All projects",
-    href: "/projects/visibility=all",
+    href: "projects?visibility=all",
     description:
       "Showcases all of your projects, sorted by your most recent activity.",
   },
   {
     title: "Public projects",
-    href: "/projects?visibility=public",
+    href: "projects?visibility=public",
     description:
       "Showcases your public projects, sorted by your most recent activity. This visibility is available to everyone.",
   },
   {
     title: "Private projects",
-    href: "/projects?visibility=private",
+    href: "projects?visibility=private",
     description:
       "Showcases your private projects, sorted by your most recent activity. This visibility is only available to you.",
   },
   {
     title: "Create projects",
-    href: "/projects/add",
+    href: "projects/add",
     description: "Create a new project, or import an existing one.",
   }
 ]
@@ -48,7 +48,7 @@ export default function NavLinks({
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <Link href={`/dashboard/${user.name}`} legacyBehavior passHref>
+          <Link href={`/dashboard/${user.name}`} legacyBehavior passHref >
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
               Dashboard
             </NavigationMenuLink>
@@ -62,7 +62,7 @@ export default function NavLinks({
                 <ListItem
                   key={component.title}
                   title={component.title}
-                  href={`${user.name}${component.href}`}
+                  href={`/dashboard/${user.name}/${component.href}`}
                 >
                   {component.description}
                 </ListItem>
@@ -86,6 +86,7 @@ const ListItem = React.forwardRef<
   React.ElementRef<"a">,
   React.ComponentPropsWithoutRef<"a">
 >(({ className, title, children, ...props }, ref) => {
+
   return (
     <li>
       <NavigationMenuLink asChild>

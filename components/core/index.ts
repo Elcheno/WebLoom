@@ -1,5 +1,9 @@
 import Button from '@/components/core/button';
+import { SearchInput } from './searchInput';
+import ConfirmationDialog from './confirmationDialog';
 
 export {
-  Button
+  Button,
+  SearchInput,
+  ConfirmationDialog
 }

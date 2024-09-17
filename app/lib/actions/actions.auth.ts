@@ -16,7 +16,6 @@ export async function logOut() {
 export async function getSession() {
   try {
     const session = await auth();
-    console.log(await auth());
     if (!session?.user) return null;
     return session;
   } catch (error) {

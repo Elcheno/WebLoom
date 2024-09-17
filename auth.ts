@@ -11,14 +11,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks:{
     signIn: async ({ user, account, profile, email, credentials }: any) => {
       try {
-        console.log(user, account, profile, email, credentials);
+        // console.log(user, account, profile, email, credentials);
         const { email: userEmail, name, image: avatar_url } = user;
         const username: string | undefined = profile?.login as string ?? undefined;
-        console.log(userEmail, name, username, avatar_url);
         if (!userEmail || !name || !username) return false;
         const existUser = await getUserByEmail(userEmail);
   
-        console.log(existUser);
+        // console.log(existUser);
         if (existUser) {
           user.id = existUser.id;
           user.name = existUser.simple_username;
@@ -33,8 +32,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           user.id = response.id;
           user.name = response.simple_username;
         }
-
-        console.log(user);
         
         return true;
       } catch (error) {
@@ -43,16 +40,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
     },
     jwt: async (data: any) => {
-      console.log(data);
-      
+      // console.log(data);
       return data.token;
     },
     session: async ({session, token}: any) => {
-      console.log(session, token);
+      // console.log(session, token);
       session.user.id = token.sub ?? '';
-
-      console.log(session.user);
-      
       return session;
     }
   }

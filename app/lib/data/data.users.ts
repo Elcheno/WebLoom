@@ -23,7 +23,6 @@ export async function getUserByEmail(email: string) {
   noStore();
 
   try {
-    console.log('Fetching user by email...');
     const data = await sql<User>`
       SELECT * FROM users
       WHERE email = ${email}

@@ -7,7 +7,9 @@ export default function ProjectsLayout({
 
   return (
     <>
-      { children }
+      <div className="p-4 xl:p-0">
+        { children }
+      </div>
     </>
   )
 }

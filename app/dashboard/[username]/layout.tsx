@@ -17,7 +17,9 @@ export default async function DashboardLayout({
         <NavLinks user={user}/>
       </NavBar>
 
-      { children }
+      <div className="max-w-screen-xl mx-auto w-full py-8">
+        { children }
+      </div>
     </>
   )
 }

@@ -7,14 +7,11 @@ export default async function NavBar({
 } : {
   children?: React.ReactNode
 }) {
-  
   const session = await getSession();
-  console.log(session);
-  
 
   return (
     <>
-      <nav className="w-full flex flex-col px-4 py-2 gap-5 bg-white-primary">
+      <nav className="z-10 sticky top-0 w-full flex flex-col px-4 py-2 gap-5 bg-white backdrop-blur bg-opacity-50">
         <div className="w-full flex justify-between">
           <div className="flex justify-start gap-6">
             <Logo />
@@ -24,10 +21,6 @@ export default async function NavBar({
 
           <SessionButton session={session} />
         </div>
-
-        {/* <div className="px-2">
-          { children }
-        </div> */}
       </nav>
     </>
   )

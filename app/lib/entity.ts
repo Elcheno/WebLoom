@@ -15,7 +15,9 @@ export type Project = {
   description: string,
   url: string,
   user_id: string,
-  created_at: string
+  created_at: string,
+  private_id?: string,
+  public_id?: string
 }
 
 export type Public = {

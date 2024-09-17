@@ -1,25 +1,26 @@
 "use server";
 
 import { Private, Project, Public } from "@/app/lib/entity";
-import { sql } from "@vercel/postgres";
+import { QueryResult, sql } from "@vercel/postgres";
 import { z } from "zod";
 import { getSession } from "@/app/lib/actions/actions.auth";
+import { revalidatePath } from "next/cache";
 
 const ProjectSchema = z.object({
   id: z.string(),
   name: z.string(),
   simple_name: z.string(),
-  description: z.string().optional(),
-  url: z.string().optional(),
+  description: z.optional(z.string()),
+  url: z.string().url().optional().or(z.literal("")),
   user_id: z.string(),
   created_at: z.string()
 });
 
 const ProjectFormSchema = z.object({
   name: z.string(),
-  description: z.string().optional(),
+  description: z.optional(z.string()),
   visibility: z.enum(['public', 'private']),
-  url: z.string().optional()
+  url: z.string().url().optional().or(z.literal(""))
 });
 
 const ProjectRemoveSchema = ProjectSchema.omit({
@@ -40,10 +41,11 @@ const ProjectUpdateSchema = ProjectSchema.omit({
 export async function insertProject(prevState: string | undefined, formData: FormData) {
   try {
 
-    const { name, description, visibility } = ProjectFormSchema.parse({
+    const { name, description, visibility, url } = ProjectFormSchema.parse({
       name: formData.get('name'),
       description: formData.get('description'),
-      visibility: formData.get('visibility')
+      visibility: formData.get('visibility'),
+      url: formData.get('url')
     })
 
     const session = await getSession();
@@ -51,24 +53,33 @@ export async function insertProject(prevState: string | undefined, formData: For
 
     if (!user_id) throw new Error('User not found');
 
-    const projectData = await sql<Project>`
-      INSERT INTO projects (name, simple_name, description, user_id)
-      VALUES (${name}, ${name.toLocaleLowerCase()}, ${description}, ${user_id})
-      RETURNING *
-    `;
+    let projectData: QueryResult<Project>;
+
+    if (url && url !== '') {
+      projectData = await sql<Project>`
+        INSERT INTO projects (name, simple_name, description, user_id, url)
+        VALUES (${name}, ${name.toLocaleLowerCase()}, ${description}, ${user_id}, ${url})
+        RETURNING *
+      `;
+    } else {
+      projectData = await sql<Project>`
+        INSERT INTO projects (name, simple_name, description, user_id)
+        VALUES (${name}, ${name.toLocaleLowerCase()}, ${description}, ${user_id})
+        RETURNING *
+      `;
+    }
     
-    if (visibility === 'public') {
+    if (projectData && visibility === 'public') {
       await sql<Public>`
         INSERT INTO public (project_id)
         VALUES (${projectData.rows[0].id})
       `;
-    } else if (visibility === 'private') {
+    } else if (projectData && visibility === 'private') {
       await sql<Private>`
         INSERT INTO private (project_id)
         VALUES (${projectData.rows[0].id})
       `;
     }
-    
 
   } catch (error) {
     console.error(`Error to insert project: ${error}`);
@@ -89,9 +100,9 @@ export async function removeProject(prevState: string | undefined, formData: For
     if (!user_id) throw new Error('User not found');
 
     await sql`
-      DELETE FROM projects WHERE id = ${id} AND user_id = ${user_id} CASCADE
+      DELETE FROM projects WHERE id = ${id} AND user_id = ${user_id}
     `
-
+    revalidatePath('/projects')
   } catch (error) {
     console.error(`Error to remove project: ${error}`);
     return 'Error remove project';
@@ -100,6 +111,9 @@ export async function removeProject(prevState: string | undefined, formData: For
 
 export async function updateProject(prevState: string | undefined, formData: FormData) {
   try {
+
+    console.log(formData.get('url'));
+    
 
     const { id, name, description, url } = ProjectUpdateSchema.parse({
       id: formData.get('id'),
@@ -117,11 +131,12 @@ export async function updateProject(prevState: string | undefined, formData: For
       UPDATE projects 
       SET 
       name = ${name},
+      simple_name = ${name.toLocaleLowerCase()},
       description = ${description},
       url = ${url}
       WHERE id = ${id} AND user_id = ${user_id}
     `
-
+    revalidatePath('/dasboard/[username]/[project]')
   } catch (error) {
     console.error(`Error to update project: ${error}`);
     return 'Error update project';
