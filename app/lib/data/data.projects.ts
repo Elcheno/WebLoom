@@ -11,9 +11,10 @@ export async function getPublicProjects() {
   // noStore();
 
   // try {
+
   //   const data = await sql<Project>`
   //     SELECT pr.* FROM public pu
-  //    ; INNER JOIN projects pr ON pu.project_id = pr.id
+  //     INNER JOIN projects pr ON pu.project_id = pr.id
   //     ORDER BY pu.created_at
   //   `;
 
@@ -133,26 +134,41 @@ export async function getMyPublicProjects() {
 }
 
 export async function getMyPrivateProjects() {
-  // noStore();
+  noStore();
 
-  // try {
-  //   const session = await getSession();
-  //   const user_id = session?.user?.id;
+  try {
+    const session = await getSession();
+    const user_id = session?.user?.id;
   
-  //   if (!user_id) throw new Error('User not found');
+    if (!user_id) throw new Error('User not found');
 
-  //   const data = await sql<Project>`
-  //     SELECT pr.* FROM private pv
-  //     INNER JOIN projects pr ON pv.project_id = pr.id
-  //     WHERE pr.user_id = ${user_id}
-  //     ORDER BY pv.created_at 
-  //   `;
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
-  //   return data.rows;
-  // } catch (error) {
-  //   console.error('Error fetching private projects:', error);
-  //   throw new Error('Failed to fetch private projects')
-  // }
+    const data = await sql<projectEntity>`
+      SELECT pr.* FROM private pu
+      INNER JOIN projects pr ON pu.project_id = pr.id
+      WHERE pr.user_id = ${user_id}
+      ORDER BY pu.created_at
+    `;
+
+    const result = data.rows.map((project: projectEntity) => {
+      return {
+        id: project.id,
+        name: project.name,
+        simple_name: project.simple_name,
+        url: project.url,
+        user_id: project.user_id,
+        description: project.description,
+        created_at: project.created_at,
+        visibility: "private"
+      } as Project
+    }) as Project[]
+
+    return result;
+  } catch (error) {
+    console.error('Error fetching private projects:', error);
+    throw new Error('Failed to fetch private projects')
+  }
 }
 
 export async function getMyLastProject() {
