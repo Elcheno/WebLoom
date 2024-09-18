@@ -38,6 +38,12 @@ const ProjectUpdateSchema = ProjectSchema.omit({
   simple_name: true
 })
 
+const ProjectVisibilitySchema = z.object({
+  id: z.string(),
+  visibility: z.enum(['public', 'private']),
+  actual_visibility: z.enum(['public', 'private'])
+})
+
 export async function insertProject(prevState: string | undefined, formData: FormData) {
   try {
 
@@ -110,10 +116,7 @@ export async function removeProject(prevState: string | undefined, formData: For
 }
 
 export async function updateProject(prevState: string | undefined, formData: FormData) {
-  try {
-
-    console.log(formData.get('url'));
-    
+  try {    
 
     const { id, name, description, url } = ProjectUpdateSchema.parse({
       id: formData.get('id'),
@@ -136,6 +139,45 @@ export async function updateProject(prevState: string | undefined, formData: For
       url = ${url}
       WHERE id = ${id} AND user_id = ${user_id}
     `
+    revalidatePath('/dasboard/[username]/[project]')
+  } catch (error) {
+    console.error(`Error to update project: ${error}`);
+    return 'Error update project';
+  }
+}
+
+export async function updateProjectVisibility(prevState: string | undefined, formData: FormData) {
+  try {
+
+    const { id, visibility, actual_visibility } = ProjectVisibilitySchema.parse({
+      id: formData.get('id'),
+      visibility: formData.get('visibility'),
+      actual_visibility: formData.get('actual_visibility')
+    })    
+
+    const session = await getSession();
+    const user_id = session?.user?.id;
+
+    if (!user_id) throw new Error('User not found');
+
+    if (visibility === 'public' && actual_visibility === 'private') {
+      await sql`
+        DELETE FROM private WHERE project_id = ${id}
+      `
+      await sql`
+        INSERT INTO public (project_id)
+        VALUES (${id})
+      `
+    } else if (visibility === 'private' && actual_visibility === 'public') {
+      await sql`
+        DELETE FROM public WHERE project_id = ${id}
+      `
+      await sql`
+        INSERT INTO private (project_id)
+        VALUES (${id})
+      `
+    }
+
     revalidatePath('/dasboard/[username]/[project]')
   } catch (error) {
     console.error(`Error to update project: ${error}`);

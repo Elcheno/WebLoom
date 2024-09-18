@@ -3,13 +3,16 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Project } from "@/lib/types";
 import ProjectOption from "./projectOption";
-import { updateProject as updateProjectAction } from "@/app/lib/actions/actions.project";
+import {
+  updateProject as updateProjectAction, 
+  updateProjectVisibility as updateProjectVisibilityAction
+} from "@/app/lib/actions/actions.project";
 import { 
   ProjectUpdateDescription,
-  ProjectUpdateName
+  ProjectUpdateName,
+  ProjectUpdateVisibility,
+  ProjectUpdateUrl
 } from "./optionsComponent";
-import { Button } from "@/components/ui/button"
-
 
 export default function ProjectOptionsCard({
   project
@@ -19,6 +22,11 @@ export default function ProjectOptionsCard({
   const updateProject = async (formData: FormData) => {
     if (!project) return;
     return await updateProjectAction(undefined, formData);
+  }
+
+  const updateProjectVisibility = async (formData: FormData) => {
+    if (!project) return;
+    return await updateProjectVisibilityAction(undefined, formData);
   }
 
   return (
@@ -42,15 +50,17 @@ export default function ProjectOptionsCard({
         </ProjectOption>
 
         <ProjectOption title="Change visibility" description="Change project visibility description">
-          <Button className="w-min">
-            Change visibility 
-          </Button>
+          <ProjectUpdateVisibility
+            project={project}
+            updateProject={updateProjectVisibility}
+          />
         </ProjectOption>
 
         <ProjectOption title="Change url" description="Change project url description">
-          <Button className="w-min">
-            Change url 
-          </Button>
+          <ProjectUpdateUrl
+            project={project}
+            updateProject={updateProject}
+          />
         </ProjectOption>
       </CardContent>
     </Card>

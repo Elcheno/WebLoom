@@ -25,7 +25,7 @@ export default function ProjectUpdateName({
 }) {
   const [ name, setName ] = useState<string>(project?.name ?? '');
 
-  const updateDescription = async () => {
+  const update = async () => {
     if (!project) return;
 
     const formData = new FormData();
@@ -71,7 +71,7 @@ export default function ProjectUpdateName({
         </div>
         <DialogFooter>
           <DialogClose asChild>    
-            <Button type="button" onClick={() => updateDescription()}>Save changes</Button>
+            <Button type="button" onClick={() => update()}>Save changes</Button>
           </DialogClose>
         </DialogFooter>
       </DialogContent>

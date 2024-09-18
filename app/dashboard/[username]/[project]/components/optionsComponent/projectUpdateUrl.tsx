@@ -11,28 +11,27 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { toast } from "sonner"
+import { Input } from "@/components/ui/input";
 
-export default function ProjectUpdateDescription({
+export default function ProjectUpdateUrl({
   project,
   updateProject
 } : {
   project: Project | null,
   updateProject: (formData: FormData) => Promise<"Error update project" | undefined>
 }) {
-
-  const [ description, setDescription ] = useState<string>(project?.description ?? '');
+  const [ url, setUrl ] = useState<string>(project?.url ?? '');
 
   const update = async () => {
     if (!project) return;
 
     const formData = new FormData();
-    formData.append('id', project.id);
-    formData.append('name', project.name);
-    formData.append('description', description);
-    formData.append('url', project.url || '');
+    formData.append('id', project?.id);
+    formData.append('name', project?.name);
+    formData.append('description', project?.description);
+    formData.append('url', url);
 
     const result = await updateProject(formData);
 
@@ -46,25 +45,25 @@ export default function ProjectUpdateDescription({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>Edit description</Button>
+        <Button>Edit url</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit description</DialogTitle>
+          <DialogTitle>Edit url</DialogTitle>
           <DialogDescription>
             Make changes to your profile here. Click save when you're done.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="description" className="text-right">
-              Description
+            <Label htmlFor="url" className="text-right">
+              Name
             </Label>
-            <Textarea
-              id="description"
-              defaultValue={description}
+            <Input
+              id="url"
+              defaultValue={url}
               className="col-span-3"
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={(e) => setUrl(e.target.value)}
             />
           </div>
         </div>
