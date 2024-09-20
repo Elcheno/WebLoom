@@ -15,6 +15,10 @@ export function formatDate(date: string | Date) {
   return new Date(date).toISOString().split('T')[0];
 }
 
+export function formatDateTime(date: string | Date) {
+  return `${new Date(date).toISOString().split('T')[0]} ${new Date(date).toISOString().split('T')[1].split('.')[0]}`;
+}
+
 export function formatFavicon(url: string) {
   return `${url}/favicon.ico`;
 }

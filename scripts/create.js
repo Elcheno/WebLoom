@@ -4,8 +4,25 @@ const {
   projectsSchema,
   publicSchema,
   privateSchema,
-  publicationsSchema
+  publicationsSchema,
+  projectHistorySchema
 } = require('./schema.js');
+
+const {
+  typeActionSchema
+} = require('./types.js');
+
+const {
+  beforeDeleteProjectFunction,
+  afterCreateProjectFunction,
+  afterUpdateProjectFunction
+} = require('./functions.js');
+
+const {
+  beforeDeleteProjectTrigger,
+  afterCreateProjectTrigger,
+  afterUpdateProjectTrigger
+} = require('./triggers.js');
 
 async function createUserTable(client) {
   try {
@@ -81,9 +98,132 @@ async function createPublications(client) {
   }
 }
 
+async function createProjectHistoryTable(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+    const createTable = await client.query(projectHistorySchema);
+
+    return {
+      createTable
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+async function createActionType(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+    const createType = await client.query(typeActionSchema);
+
+    return {
+      createType
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+async function createBeforeDeleteProjectFunction(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+    const createFunction = await client.query(beforeDeleteProjectFunction);
+
+    return {
+      createFunction
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+async function createAfterCreateProjectFunction(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+    
+    const createFunction = await client.query(afterCreateProjectFunction);
+    return {
+      createFunction
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+async function createAfterUpdateProjectFunction(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+    const createFunction = await client.query(afterUpdateProjectFunction);
+
+    return {
+      createFunction
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+async function createBeforeDeleteProjectTrigger(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+    const createTrigger = await client.query(beforeDeleteProjectTrigger);
+
+    return {
+      createTrigger
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+async function createAfterCreateProjectTrigger(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+    const createTrigger = await client.query(afterCreateProjectTrigger);
+
+    return {
+      createTrigger
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+async function createAfterUpdateProjectTrigger(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+    const createTrigger = await client.query(afterUpdateProjectTrigger);
+
+    return {
+      createTrigger
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
 
 async function main() {
   const client = await db.connect();
+
+  // create types
+  await createActionType(client);
 
   // create tables
   await createUserTable(client);
@@ -91,6 +231,17 @@ async function main() {
   await createPublicTable(client);
   await createPrivateTable(client);
   // await createPublications(client);
+  // await createProjectHistoryTable(client);
+
+  // create functions
+  // await createBeforeDeleteProjectFunction(client);
+  // await createAfterCreateProjectFunction(client);
+  // await createAfterUpdateProjectFunction(client);
+
+  // create triggers
+  // await createBeforeDeleteProjectTrigger(client);
+  // await createAfterCreateProjectTrigger(client);
+  // await createAfterUpdateProjectTrigger(client);
 
   await client.end();
 }

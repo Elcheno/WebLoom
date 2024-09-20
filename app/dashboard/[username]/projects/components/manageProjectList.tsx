@@ -26,9 +26,9 @@ export default async function ManageProjectList({
             ? projectListEmpty() 
             : result.map((project: Project) => {
                 return (
-                  <Link key={project.id} href={`${project.simple_name}`} legacyBehavior>
+                  // <Link key={project.id} href={`${project.simple_name}`} legacyBehavior>
+                  // </Link>
                     <CardProject  project={project} />
-                  </Link>
                 )
               })
         }

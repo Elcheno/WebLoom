@@ -55,6 +55,17 @@ async function dropPublications(client) {
   }
 }
 
+async function dropProjectHistory(client) {
+  try {
+    await client.sql`
+      DROP TABLE IF EXISTS project_history CASCADE;
+    `;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
 async function main() {
   const client = await db.connect();
 
@@ -62,7 +73,8 @@ async function main() {
   await dropProjects(client);
   await dropPrivate(client);
   await dropPublic(client);
-  // await dropPublications(client);
+  await dropPublications(client);
+  await dropProjectHistory(client);
 
   await client.end();
 }

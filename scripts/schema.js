@@ -47,12 +47,23 @@ const publicationsSchema = `
   );
 `
 
-
+const projectHistorySchema = `
+  CREATE TABLE IF NOT EXISTS project_history (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    project_id UUID,
+    user_id UUID,
+    action type_action NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    FOREIGN KEY (project_id) REFERENCES projects(id) ON UPDATE CASCADE ON DELETE SET NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE SET NULL
+  );
+`
 
 module.exports = {
   usersSchema,
   projectsSchema,
   publicSchema,
   privateSchema,
-  publicationsSchema
+  publicationsSchema,
+  projectHistorySchema
 }

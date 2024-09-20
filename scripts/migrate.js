@@ -4,8 +4,8 @@ const create = require('./create.js');
 
 async function main() {
   await drop();
-  await create();
-  await seed();
+  // await create();
+  // await seed();
 }
 
 main().catch((err) => {
