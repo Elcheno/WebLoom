@@ -1,0 +1,86 @@
+"use client";
+
+import { Card } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import { formatDate, formatFavicon, formatDateTime } from "@/app/utils/format";
+import { RelativeTime } from "@/components/core";
+
+export default function ProjectHistory({ data }: { data: any[] }) {
+  return (
+    <Card className="p-5 flex flex-col gap-2 w-full">
+      <h2 className="text-center pb-2">Project History</h2>
+      {data.length > 0 ? (
+        data.map((v, i) => {
+          return (
+            <HoverCard key={i}>
+              <HoverCardTrigger>
+                <div className="border-b p-2 hover:bg-gray-100 rounded-t-md">
+                  <span className="flex justify-start items-center gap-2">
+                    <Card className="flex gap-2 p-2 justify-center items-center">
+                      <Avatar className="select-none h-8 w-8">
+                        <AvatarImage src={formatFavicon(v?.avatar_url ?? "")} />
+                        <AvatarFallback>
+                          {v?.project_name ? v.project_name[0] : ""}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span className="text-gray-400"> - </span>
+                      <Avatar className="select-none h-8 w-8">
+                        <AvatarImage
+                          src={formatFavicon(v?.url_project ?? "")}
+                        />
+                        <AvatarFallback>
+                          {v?.project_name ? v.project_name[0] : ""}
+                        </AvatarFallback>
+                      </Avatar>
+                    </Card>
+                    <span>
+                      {v.username || ""} has {v.action} the project{" "}
+                      {v.project_name || ""} at{" "}
+                      <RelativeTime date={new Date(v.created_at || "")} />
+                    </span>
+                  </span>
+                </div>
+              </HoverCardTrigger>
+              <HoverCardContent>
+                <div className="flex flex-col gap-8">
+                  <div className="grid grid-cols-2 justify-between gap-4">
+                    <div className="flex flex-row gap-1 justify-center items-center">
+                      <Avatar className="select-none">
+                        <AvatarImage
+                          src={formatFavicon(v?.url_project ?? "")}
+                        />
+                        <AvatarFallback>
+                          {v?.project_name ? v.project_name[0] : ""}
+                        </AvatarFallback>
+                      </Avatar>
+                      <p>{v.project_name}</p>
+                    </div>
+                    <div className="flex justify-center items-center">
+                      <span>{v.action.toUpperCase()}</span>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 justify-between">
+                    <div className="flex justify-center items-center">
+                      <span>{formatDate(v.created_at)}</span>
+                    </div>
+                    <div className="flex justify-center items-center">
+                      <span>{formatDateTime(v.created_at)}</span>
+                    </div>
+                  </div>
+                </div>
+              </HoverCardContent>
+            </HoverCard>
+          );
+        })
+      ) : (
+        <div></div>
+      )}
+    </Card>
+  );
+}

@@ -1,13 +1,20 @@
 "use client";
 
-import '@github/relative-time-element'
+import { useEffect, useState } from "react";
+import "@github/relative-time-element";
 
-export default function RelativeTime({
-  date
-} : {
-  date: any
-}) {
+export default function RelativeTime({ date }: { date: any }) {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return null;
+  }
+
   return (
-    <relative-time datetime={new Date(date).toString()}></relative-time>
-  )
+    <relative-time datetime={new Date(date).toISOString()}></relative-time>
+  );
 }
