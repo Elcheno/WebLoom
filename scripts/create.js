@@ -1,28 +1,26 @@
-const { db } = require('@vercel/postgres');
+const { db } = require("@vercel/postgres");
 const {
   usersSchema,
   projectsSchema,
   publicSchema,
   privateSchema,
   publicationsSchema,
-  projectHistorySchema
-} = require('./schema.js');
+  projectHistorySchema,
+} = require("./schema.js");
 
-const {
-  typeActionSchema
-} = require('./types.js');
+const { typeActionSchema, typeProyectVisibilitySchema } = require("./types.js");
 
 const {
   beforeDeleteProjectFunction,
   afterCreateProjectFunction,
-  afterUpdateProjectFunction
-} = require('./functions.js');
+  afterUpdateProjectFunction,
+} = require("./functions.js");
 
 const {
   beforeDeleteProjectTrigger,
   afterCreateProjectTrigger,
-  afterUpdateProjectTrigger
-} = require('./triggers.js');
+  afterUpdateProjectTrigger,
+} = require("./triggers.js");
 
 async function createUserTable(client) {
   try {
@@ -30,8 +28,8 @@ async function createUserTable(client) {
     const createTable = await client.query(usersSchema);
 
     return {
-      createTable
-    }
+      createTable,
+    };
   } catch (error) {
     console.error(error);
     throw error;
@@ -45,8 +43,8 @@ async function createProjectsTable(client) {
     const createTable = await client.query(projectsSchema);
 
     return {
-      createTable
-    }
+      createTable,
+    };
   } catch (error) {
     console.error(error);
     throw error;
@@ -60,8 +58,8 @@ async function createPublicTable(client) {
     const createTable = await client.query(publicSchema);
 
     return {
-      createTable
-    }
+      createTable,
+    };
   } catch (error) {
     console.error(error);
     throw error;
@@ -75,8 +73,8 @@ async function createPrivateTable(client) {
     const createTable = await client.query(privateSchema);
 
     return {
-      createTable
-    }
+      createTable,
+    };
   } catch (error) {
     console.error(error);
     throw error;
@@ -90,8 +88,8 @@ async function createPublications(client) {
     const createTable = await client.query(publicationsSchema);
 
     return {
-      createTable
-    }
+      createTable,
+    };
   } catch (error) {
     console.error(error);
     throw error;
@@ -105,8 +103,8 @@ async function createProjectHistoryTable(client) {
     const createTable = await client.query(projectHistorySchema);
 
     return {
-      createTable
-    }
+      createTable,
+    };
   } catch (error) {
     console.error(error);
     throw error;
@@ -120,8 +118,23 @@ async function createActionType(client) {
     const createType = await client.query(typeActionSchema);
 
     return {
-      createType
-    }
+      createType,
+    };
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+async function createProjectVisibilityType(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+    const createType = await client.query(typeProyectVisibilitySchema);
+
+    return {
+      createType,
+    };
   } catch (error) {
     console.error(error);
     throw error;
@@ -135,8 +148,8 @@ async function createBeforeDeleteProjectFunction(client) {
     const createFunction = await client.query(beforeDeleteProjectFunction);
 
     return {
-      createFunction
-    }
+      createFunction,
+    };
   } catch (error) {
     console.error(error);
     throw error;
@@ -147,11 +160,10 @@ async function createAfterCreateProjectFunction(client) {
   try {
     await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 
-    
     const createFunction = await client.query(afterCreateProjectFunction);
     return {
-      createFunction
-    }
+      createFunction,
+    };
   } catch (error) {
     console.error(error);
     throw error;
@@ -165,8 +177,8 @@ async function createAfterUpdateProjectFunction(client) {
     const createFunction = await client.query(afterUpdateProjectFunction);
 
     return {
-      createFunction
-    }
+      createFunction,
+    };
   } catch (error) {
     console.error(error);
     throw error;
@@ -180,8 +192,8 @@ async function createBeforeDeleteProjectTrigger(client) {
     const createTrigger = await client.query(beforeDeleteProjectTrigger);
 
     return {
-      createTrigger
-    }
+      createTrigger,
+    };
   } catch (error) {
     console.error(error);
     throw error;
@@ -195,8 +207,8 @@ async function createAfterCreateProjectTrigger(client) {
     const createTrigger = await client.query(afterCreateProjectTrigger);
 
     return {
-      createTrigger
-    }
+      createTrigger,
+    };
   } catch (error) {
     console.error(error);
     throw error;
@@ -210,47 +222,72 @@ async function createAfterUpdateProjectTrigger(client) {
     const createTrigger = await client.query(afterUpdateProjectTrigger);
 
     return {
-      createTrigger
-    }
+      createTrigger,
+    };
   } catch (error) {
     console.error(error);
     throw error;
   }
 }
 
-
-async function main() {
+async function createTypes() {
   const client = await db.connect();
 
-  // create types
   await createActionType(client);
+  await createProjectVisibilityType(client);
 
-  // create tables
+  await client.end();
+  console.log("TYPES CREATED");
+}
+
+async function createTables() {
+  const client = await db.connect();
+
   await createUserTable(client);
   await createProjectsTable(client);
   await createPublicTable(client);
   await createPrivateTable(client);
-  // await createPublications(client);
-  // await createProjectHistoryTable(client);
-
-  // create functions
-  // await createBeforeDeleteProjectFunction(client);
-  // await createAfterCreateProjectFunction(client);
-  // await createAfterUpdateProjectFunction(client);
-
-  // create triggers
-  // await createBeforeDeleteProjectTrigger(client);
-  // await createAfterCreateProjectTrigger(client);
-  // await createAfterUpdateProjectTrigger(client);
+  await createPublications(client);
+  await createProjectHistoryTable(client);
 
   await client.end();
+  console.log("TABLES CREATED");
+}
+
+async function createFunctions() {
+  const client = await db.connect();
+
+  await createBeforeDeleteProjectFunction(client);
+  await createAfterCreateProjectFunction(client);
+  await createAfterUpdateProjectFunction(client);
+
+  await client.end();
+  console.log("FUNCTIONS CREATED");
+}
+
+async function createTriggers() {
+  const client = await db.connect();
+
+  await createBeforeDeleteProjectTrigger(client);
+  await createAfterCreateProjectTrigger(client);
+  await createAfterUpdateProjectTrigger(client);
+
+  await client.end();
+  console.log("TRIGGERS CREATED");
+}
+
+async function main() {
+  await createTypes();
+  await createTables();
+  await createFunctions();
+  await createTriggers();
 }
 
 main().catch((err) => {
   console.error(
-    'An error occurred while attempting to seed the database:',
+    "An error occurred while attempting to seed the database:",
     err,
   );
-})
+});
 
-module.exports = main
+module.exports = main;

@@ -68,7 +68,10 @@ export default async function Dashboard() {
           <Card className="grid grid-cols-1 md:grid-cols-2 justify-center items-center gap-10 p-5">
             <section className="flex justify-center items-center w-full h-full">
               <Suspense fallback="cargando...">
-                <LastProject data={public_projects[0]} />
+                <LastProject
+                  data={public_projects[0]}
+                  session_user={session_user}
+                />
               </Suspense>
             </section>
 

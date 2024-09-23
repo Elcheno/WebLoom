@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "create-tables": "node -r dotenv/config ./scripts/create.js",
+    "create": "node -r dotenv/config ./scripts/create.js",
     "seed": "node -r dotenv/config ./scripts/seed.js",
     "drop": "node -r dotenv/config ./scripts/drop.js",
     "migrate": "node -r dotenv/config ./scripts/migrate.js"

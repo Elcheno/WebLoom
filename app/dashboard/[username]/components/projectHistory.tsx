@@ -12,8 +12,8 @@ import { RelativeTime } from "@/components/core";
 
 export default function ProjectHistory({ data }: { data: any[] }) {
   return (
-    <Card className="p-5 flex flex-col gap-2 w-full">
-      <h2 className="text-center pb-2">Project History</h2>
+    <Card className="p-5 flex flex-col gap-2 w-full min-h-[25rem]">
+      <h2 className="text-center pb-2 border-b">Project History</h2>
       {data.length > 0 ? (
         data.map((v, i) => {
           return (

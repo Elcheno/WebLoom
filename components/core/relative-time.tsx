@@ -14,6 +14,10 @@ export default function RelativeTime({ date }: { date: any }) {
     return null;
   }
 
+  // if (!date) {
+  //   return null;
+  // }
+
   return (
     <relative-time datetime={new Date(date).toISOString()}></relative-time>
   );
