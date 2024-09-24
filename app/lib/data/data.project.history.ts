@@ -1,6 +1,7 @@
-import { QueryResult, sql } from "@vercel/postgres";
+import { sql } from "@vercel/postgres";
 import { unstable_noStore as noStore } from "next/cache";
 import { getSession } from "../actions/actions.auth";
+import { Project_History } from "../entity";
 
 export async function getProjectsHistory() {
   noStore();
@@ -11,7 +12,9 @@ export async function getProjectsHistory() {
 
     if (!user_id) throw new Error("User not found");
 
-    // let response: any | null = null;
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+
+    let response: Project_History[] = [];
 
     const data = await sql<any>`
       SELECT ph.id as history_id, ph.action, ph.created_at, pr.id as project_id, pr.name as project_name, pr.simple_name as project_simple_name, pr.url as url_project, us.id as user_id, us.username, us.avatar_url FROM project_history ph
@@ -22,22 +25,32 @@ export async function getProjectsHistory() {
       LIMIT 5
     `;
 
-    // if (data.rows.length > 0) {
-    //   response = {
-    //     id: data.rows[0].id,
-    //     name: data.rows[0].name,
-    //     simple_name: data.rows[0].simple_name,
-    //     url: data.rows[0].url,
-    //     user_id: data.rows[0].user_id,
-    //     description: data.rows[0].description,
-    //     created_at: data.rows[0].created_at,
-    //     visibility: data.rows[0].private_id
-    //       ? 'private'
-    //       : data.rows[0].public_id && 'public'
-    //   } as Project;
-    // }
+    if (data.rows.length > 0) {
+      response = data.rows.map((v) => {
+        return {
+          id: v.history_id,
+          created_at: v.created_at,
+          action: v.action,
+          project: !v.project_id
+            ? null
+            : {
+                id: v.project_id,
+                name: v.project_name,
+                simple_name: v.project_simple_name,
+                url: v.url_project,
+              },
+          user: !v.user_id
+            ? null
+            : {
+                id: v.user_id,
+                username: v.username,
+                avatar_url: v.avatar_url,
+              },
+        } as Project_History;
+      }) as Project_History[];
+    }
 
-    return data.rows;
+    return response;
   } catch (error) {
     console.error("Error fetching history projects:", error);
     throw new Error("Failed to fetch history projects");

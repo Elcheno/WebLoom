@@ -11,7 +11,11 @@ import { formatDate, formatFavicon, formatDateTime } from "@/app/utils/format";
 import { RelativeTime } from "@/components/core";
 import { Project_History } from "@/app/lib/entity";
 
-export default function ProjectHistory({ data }: { data: Project_History[] }) {
+export default function CardProjectHistoryClient({
+  data,
+}: {
+  data: Project_History[];
+}) {
   return (
     <Card className="p-5 flex flex-col gap-2 w-full min-h-[25rem]">
       <h2 className="text-center pb-2 border-b">Project History</h2>

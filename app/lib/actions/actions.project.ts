@@ -177,6 +177,11 @@ export async function updateProjectVisibility(
         INSERT INTO public (project_id)
         VALUES (${id})
       `;
+      await sql`
+        UPDATE projects
+        SET project_visibility = ${visibility}
+        WHERE pr.id = ${id}
+      `;
     } else if (visibility === "private" && actual_visibility === "public") {
       await sql`
         DELETE FROM public WHERE project_id = ${id}
@@ -184,6 +189,11 @@ export async function updateProjectVisibility(
       await sql`
         INSERT INTO private (project_id)
         VALUES (${id})
+      `;
+      await sql`
+        UPDATE projects
+        SET project_visibility = ${visibility}
+        WHERE pr.id = ${id}
       `;
     }
 

@@ -1,22 +1,19 @@
 "use client";
 
-import { Card } from "@/components/ui/card";
-import { Project } from "@/lib/types";
+import { Project } from "@/app/lib/entity";
+import { useState } from "react";
+import { useDebouncedCallback } from "use-debounce";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { formatFavicon } from "@/app/utils/format";
 import { RelativeTime } from "@/components/core";
-
-import { navigate } from "@/app/lib/actions/actions.route";
-
-import { useDebouncedCallback } from "use-debounce";
-
-import "./../styles/style.css";
-import { useState } from "react";
-
+import { Card } from "@/components/ui/card";
 import { ArrowTopRightOnSquareIcon, EyeIcon } from "@heroicons/react/16/solid";
 
-export default function LastProject({
+import { navigate } from "@/app/lib/actions/actions.route";
+import "./../../styles/style.css";
+
+export default function CardLastProjectClient({
   data,
   session_user,
 }: {
@@ -83,7 +80,7 @@ export default function LastProject({
           <div className="grid grid-cols-2 items-center justify-between h-min">
             <div>
               <Badge>
-                <span>{data?.visibility}</span>
+                <span>{data?.project_visibility}</span>
               </Badge>
             </div>
             <div className="flex justify-end items-end">

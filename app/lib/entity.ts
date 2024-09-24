@@ -28,3 +28,20 @@ export type Private = {
   project_id: string;
   created_at: string;
 };
+
+export type Project_History = {
+  id: string;
+  action: string;
+  created_at: string;
+  project: {
+    id: string;
+    name: string;
+    simple_name: string;
+    url: string;
+  } | null;
+  user: {
+    id: string;
+    username: string;
+    avatar_url: string;
+  } | null;
+};

@@ -65,7 +65,7 @@ export async function getMyProjectsFiltered({
         url: project.url,
         user_id: project.user_id,
         description: project.description,
-        visibility: project.project_visibility,
+        project_visibility: project.project_visibility,
         created_at: project.created_at,
       } as Project;
     }) as Project[];
@@ -86,7 +86,7 @@ export async function getMyPublicProjects() {
 
     if (!user_id) throw new Error("User not found");
 
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 5000));
 
     const data = await sql<projectEntity>`
       SELECT pr.* FROM public pu
@@ -104,7 +104,7 @@ export async function getMyPublicProjects() {
         user_id: project.user_id,
         description: project.description,
         created_at: project.created_at,
-        visibility: "public",
+        project_visibility: "public",
       } as Project;
     }) as Project[];
 
@@ -124,7 +124,7 @@ export async function getMyPrivateProjects() {
 
     if (!user_id) throw new Error("User not found");
 
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 5000));
 
     const data = await sql<projectEntity>`
       SELECT pr.* FROM private pu
@@ -142,7 +142,7 @@ export async function getMyPrivateProjects() {
         user_id: project.user_id,
         description: project.description,
         created_at: project.created_at,
-        visibility: "private",
+        project_visibility: "private",
       } as Project;
     }) as Project[];
 
@@ -154,22 +154,41 @@ export async function getMyPrivateProjects() {
 }
 
 export async function getMyLastProject() {
-  // noStore();
-  // try {
-  //   const session = await getSession();
-  //   const user_id = session?.user?.id;
-  //   if (!user_id) throw new Error('User not found');
-  //   const data = await sql<Project>`
-  //     SELECT pr.* FROM projects pr
-  //     WHERE pr.user_id = ${user_id}
-  //     ORDER BY pr.created_at DESC
-  //     LIMIT 1
-  //   `;
-  //   return data.rows[0];
-  // } catch (error) {
-  //   console.error('Error fetching last project:', error);
-  //   throw new Error('Failed to fetch last project')
-  // }
+  noStore();
+
+  try {
+    const session = await getSession();
+    const user_id = session?.user?.id;
+
+    if (!user_id) throw new Error("User not found");
+
+    await new Promise((resolve) => setTimeout(resolve, 2500));
+
+    const data = await sql<projectEntity>`
+      SELECT pr.* FROM projects pr
+      WHERE pr.user_id = ${user_id}
+      ORDER BY pr.created_at DESC
+      LIMIT 1
+    `;
+
+    const result = data.rows.map((project: projectEntity) => {
+      return {
+        id: project.id,
+        name: project.name,
+        simple_name: project.simple_name,
+        url: project.url,
+        user_id: project.user_id,
+        description: project.description,
+        created_at: project.created_at,
+        project_visibility: "private",
+      } as Project;
+    }) as Project[];
+
+    return result;
+  } catch (error) {
+    console.error("Error fetching last project:", error);
+    throw new Error("Failed to fetch last project");
+  }
 }
 
 export async function getMyCountPublicProjects() {
@@ -222,9 +241,7 @@ export async function getMyProjectBySimpleName(simple_name: string) {
     let response: Project | null = null;
 
     const data = await sql<projectEntity>`
-      SELECT pr.*, pu.project_id as public_id, priv.project_id as private_id FROM projects pr
-      LEFT JOIN public as pu ON pu.project_id = pr.id
-      LEFT JOIN private as priv ON priv.project_id = pr.id
+      SELECT pr.* FROM projects pr
       WHERE pr.user_id = ${user_id}
       AND pr.simple_name = ${simple_name}
     `;
@@ -238,9 +255,7 @@ export async function getMyProjectBySimpleName(simple_name: string) {
         user_id: data.rows[0].user_id,
         description: data.rows[0].description,
         created_at: data.rows[0].created_at,
-        visibility: data.rows[0].private_id
-          ? "private"
-          : data.rows[0].public_id && "public",
+        visibility: data.rows[0].project_visibility,
       } as Project;
     }
 
