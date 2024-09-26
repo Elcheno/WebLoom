@@ -10,6 +10,7 @@ import {
 import { formatDate, formatFavicon, formatDateTime } from "@/app/utils/format";
 import { RelativeTime } from "@/components/core";
 import { Project_History } from "@/app/lib/entity";
+import { CursorArrowRaysIcon } from "@heroicons/react/16/solid";
 
 export default function CardProjectHistoryClient({
   data,
@@ -86,7 +87,12 @@ export default function CardProjectHistoryClient({
           );
         })
       ) : (
-        <div></div>
+        <div className="w-full h-full flex flex-col items-center justify-center gap-2 my-24">
+          <div>
+            <span className="text-gray-400">You don't have any action</span>
+          </div>
+          <CursorArrowRaysIcon className="text-gray-400 w-10" />
+        </div>
       )}
     </Card>
   );

@@ -8,8 +8,8 @@ export default async function CardUser({ email }: { email: string | null }) {
   return (
     <Card className="p-10 flex justify-between">
       <div className="flex flex-col gap-1">
-        <span className="text-2xl font-bold">#{user?.username}</span>
-        <span className="text-xl">{user?.name}</span>
+        <span className="text-xl font-bold">#{user?.username}</span>
+        <span>{user?.name}</span>
       </div>
       <div className="h-[60px] flex items-center">
         <Avatar className="h-full w-full">
